@@ -32,11 +32,6 @@ Install ROS related dependency libraries, please refer to: http://wiki.ros.org
     sudo apt-get update
     sudo apt-get install -y libyaml-cpp-dev
 
-### Clone
-
-    git clone --recurse-submodules https://github.com/HesaiTechnology/HesaiLidar_ROS_2.0.git
-    
-
 ### Compile and run
 
 - ros1
