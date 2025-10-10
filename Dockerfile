@@ -18,12 +18,9 @@ RUN apt-get update && apt-get install -y \
     python3-colcon-common-extensions \
     python3-rosdep
 
-# use bash (because i'm noob)
-SHELL ["/bin/bash", "-c"]
-
 # install dependencies and build
 # docker RUN commands will initialize new shell so source need to be run.
-RUN source /opt/ros/jazzy/setup.bash && \
+RUN . /opt/ros/jazzy/setup.sh && \
     rosdep init &&  \
     rosdep update && \
     rosdep install --from-paths src -y --ignore-src && \
