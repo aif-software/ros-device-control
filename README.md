@@ -5,11 +5,12 @@ For the Flir-camera we currently use [v4l2-camera](https://gitlab.com/boldhearts
 
 To run the camera node
 ```bash
-ros2 run v4l2_camera v4l2_camera_node --ros-args --params-file v4l2_camera/v4l2_params.yaml
-```
+# Do not care if this says you have already created it, its okay.
+rosdep init
 
-## Hesai-Lidar
-To run lidar node 
-```
-ros2 run  hesai_ros_driver hesai_ros_driver_node
+# Update 
+rosdep update
+
+# Install package dependencies (Must be run in the ROOT folder).
+rosdep install --from-paths src -y --ignore-src
 ```

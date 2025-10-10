@@ -1,0 +1,8 @@
+/v4l2_camera:
+  ros__parameters:
+    image_size:
+      - 640
+      - 512
+    output_encoding: mono16
+    pixel_format: "Y16 "
+    video_device: /dev/video4
