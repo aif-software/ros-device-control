@@ -9,8 +9,7 @@ ros2 run v4l2_camera v4l2_camera_node --ros-args --params-file v4l2_camera/v4l2_
 ```
 
 ## Hesai-Lidar
-To run hesai lidar
-
+To run lidar node 
 ```
-
+ros2 run  hesai_ros_driver hesai_ros_driver_node
 ```
