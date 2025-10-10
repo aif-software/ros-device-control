@@ -7,10 +7,12 @@ Here is the documentation for setting up the repository
 After cloning the repository submodules need to be initialized (HesaiDrivers).
 
 ```bash
-git submodule update --init --recursive
-```
+# Do not care if this says you have already created it, its okay.
+rosdep init
 
-You can also do this while cloning the repository
-```bash
-git clone --recurse-submodules git@github.com:aif-software/ros-camera-control.git
+# Update 
+rosdep update
+
+# Install package dependencies (Must be run in the ROOT folder).
+rosdep install --from-paths src -y --ignore-src
 ```
