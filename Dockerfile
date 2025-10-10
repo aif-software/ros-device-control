@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
 SHELL ["/bin/bash", "-c"]
 
 # install dependencies and build
-# WARNING: docker RUN commands will initialize new shells so source need to be run.
+# docker RUN commands will initialize new shell so source need to be run.
 RUN source /opt/ros/jazzy/setup.bash && \
     rosdep init &&  \
     rosdep update && \
