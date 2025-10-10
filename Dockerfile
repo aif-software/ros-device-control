@@ -31,4 +31,4 @@ RUN source /opt/ros/jazzy/setup.bash && \
     colcon build --symlink-install # some duct tape here don't mind me
 
 # launch ros package
-CMD ["bash", "-c", "source /opt/ros/jazzy/setup.bash && source install/setup.bash && ros2 launch launch.py"]
+CMD ["bash", "-c", "source install/setup.bash && ros2 launch launch.py"]
