@@ -17,5 +17,18 @@ def generate_launch_description():
                 executable="listener",
                 name="lidar_listener",
             ),
+            Node(
+                package="v4l2_camera",
+                namespace="ros_control",
+                executable="v4l2_camera_node",
+                name="flir_driver",
+                parameters=["src/v4l2_camera/v4l2_camera.yaml"],
+            ),
+            Node(
+                package="python_flir_subscriber",
+                namespace="ros_control",
+                executable="listener",
+                name="flir_listener",
+            ),
         ]
     )
