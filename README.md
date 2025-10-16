@@ -20,6 +20,14 @@ rosdep install --from-paths src -y --ignore-src
 colcon build 
 ```
 
+## Stereo Camera
+
+For the stereo camera, we use the ROS2 drivers provided by [Carnegier Robotics](https://github.com/carnegierobotics/multisense_ros2?tab=readme-ov-file).
+
+```bash
+ros2 run multisense_ros ros_driver ip_address:=192.168.88.10
+```
+
 ## Running
 
 ```bash
