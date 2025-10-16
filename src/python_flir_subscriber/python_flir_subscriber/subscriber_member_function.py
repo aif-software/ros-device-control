@@ -14,7 +14,7 @@
 
 import rclpy
 from rclpy.node import Node
-from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
 
 
 class MinimalSubscriber(Node):
@@ -24,11 +24,11 @@ class MinimalSubscriber(Node):
     def __init__(self):
         super().__init__("flir_subscriber")
         self.subscription = self.create_subscription(
-            CompressedImage, "/image_raw/compressed", self.listener_callback, 10
+            Image, "/image_raw", self.listener_callback, 10
         )
         self.subscription  # prevent unused variable warning
 
-    def listener_callback(self, msg: CompressedImage):
+    def listener_callback(self, msg: Image):
         if msg:
             self.message_counter += 1
         self.get_logger().info('Message counter: "%s"' % self.message_counter)
