@@ -33,7 +33,6 @@ def generate_launch_description():
                 executable="listener",
             ),
             Node(
-                name="multisense_driver",
                 package="multisense_ros",
                 executable="ros_driver",
             ),
