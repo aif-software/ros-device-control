@@ -1,7 +1,7 @@
 initialization:
   sensor_ip:
       type: string
-      default_value: "10.66.171.21"
+      default_value: "192.168.88.10"
       read_only: true
       description: "MultiSense IP Address"
   sensor_mtu:
