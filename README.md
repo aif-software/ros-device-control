@@ -25,3 +25,12 @@ colcon build
 ```bash
 ros2 run <package-name> <node-name>
 ```
+## Docker
+
+```bash
+# Build image
+docker build -t ros-devices .
+
+# Run container
+docker run --device=/dev/video0:/dev/video4 --network=host ros-devices:latest
+```
