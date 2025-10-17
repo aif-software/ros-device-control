@@ -27,11 +27,15 @@ class MinimalSubscriber(Node):
             PointCloud2, "/lidar_points", self.listener_callback, 10
         )
         self.subscription  # prevent unused variable warning
+        self.publisher_ = self.create_publisher(PointCloud2, '/lidar_refined', 10)
+
 
     def listener_callback(self, msg: PointCloud2):
         if(msg):
             self.message_counter += 1
         self.get_logger().info('Message counter: "%s"' % self.message_counter)
+        # käpistele==refine data here
+        self.publisher_.publish(msg)
 
 
 def main(args=None):

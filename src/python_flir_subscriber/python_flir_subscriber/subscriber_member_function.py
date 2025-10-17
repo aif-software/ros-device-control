@@ -16,7 +16,6 @@ import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Image
 
-
 class MinimalSubscriber(Node):
 
     message_counter = 0
@@ -27,11 +26,14 @@ class MinimalSubscriber(Node):
             Image, "/image_raw", self.listener_callback, 10
         )
         self.subscription  # prevent unused variable warning
+        self.publisher_ = self.create_publisher(Image, '/flir_refined', 10)
 
     def listener_callback(self, msg: Image):
         if msg:
             self.message_counter += 1
         self.get_logger().info('Message counter: "%s"' % self.message_counter)
+        # käpistele==refine data here
+        self.publisher_.publish(msg)
 
 
 def main(args=None):
