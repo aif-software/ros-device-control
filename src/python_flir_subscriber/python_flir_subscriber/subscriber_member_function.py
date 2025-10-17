@@ -19,8 +19,6 @@ from sensor_msgs.msg import Image
 
 class MinimalSubscriber(Node):
 
-    message_counter = 0
-
     def __init__(self):
         super().__init__("flir_subscriber")
         self.subscription = self.create_subscription(
@@ -30,8 +28,8 @@ class MinimalSubscriber(Node):
 
     def listener_callback(self, msg: Image):
         if msg:
-            self.message_counter += 1
-        self.get_logger().info('Message counter: "%s"' % self.message_counter)
+            # TODO: Implement this callback!
+            return
 
 
 def main(args=None):

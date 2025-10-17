@@ -36,5 +36,6 @@ def generate_launch_description():
                 package="multisense_ros",
                 executable="ros_driver",
             ),
+            Node(name="logger", package="message_logger", executable="listener"),
         ]
     )
