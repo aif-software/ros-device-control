@@ -6,19 +6,19 @@ def generate_launch_description():
     return LaunchDescription(
         [
             Node(
+                name="lidar_driver",
                 package="hesai_ros_driver",
                 executable="hesai_ros_driver_node",
-                name="lidar_driver",
             ),
             Node(
+                name="lidar_listener",
                 package="python_lidar_subscriber",
                 executable="listener",
-                name="lidar_listener",
             ),
             Node(
+                name="flir_driver",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
-                name="flir_driver",
                 parameters=[
                     {
                         "output_encoding": "mono16",
@@ -28,9 +28,14 @@ def generate_launch_description():
                 ],
             ),
             Node(
+                name="flir_listener",
                 package="python_flir_subscriber",
                 executable="listener",
-                name="flir_listener",
+            ),
+            Node(
+                name="multisense_driver",
+                package="multisense_ros",
+                executable="ros_driver",
             ),
         ]
     )
