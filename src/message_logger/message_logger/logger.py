@@ -22,12 +22,10 @@ class Logger(Node):
 
     def __init__(self):
         super().__init__("logger")
-        self.subscription = self.create_subscription(
+        self.create_subscription(
             PointCloud2, "/lidar_points", self.lidar_listener_callback, 10
         )
-        self.subscription = self.create_subscription(
-            Image, "/image_raw", self.flir_listener_callback, 10
-        )
+        self.create_subscription(Image, "/image_raw", self.flir_listener_callback, 10)
 
     def lidar_listener_callback(self, msg: PointCloud2):
         self.get_logger().info('I heard: "%s"' % msg.data)
