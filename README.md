@@ -20,21 +20,27 @@ rosdep install --from-paths src -y --ignore-src
 colcon build
 ```
 
-## Stereo Camera
-
-For the stereo camera, we use the ROS2 drivers provided by [Carnegier Robotics](https://github.com/carnegierobotics/multisense_ros2?tab=readme-ov-file).
-
-```bash
-ros2 run multisense_ros ros_driver ip_address:=192.168.88.10
-```
-
 ## Running
+The package names can be found in src/<project-folder>/package.xml. 
+There is a line called "name" which tells the name of the specific package.
+
+This is not to be confused with the folder name which can be whatever.
+Only name that matters is the name in the package.xml.
+
+Ros run will autocorrect the package names so they don't always need to be fully typed.
 
 ```bash
 ros2 run <package-name> <node-name>
 ```
 
 ## Docker
+
+Easy to setup just build the image from Dockerfile and run.
+
+The run command displayed here will use the host computers network
+and forward the device /dev/video0 to the container and its name will be
+/dev/video4 inside the container. Both of these names can be changed depending
+on where the device actually lands on your computer.
 
 ```bash
 # Build image
