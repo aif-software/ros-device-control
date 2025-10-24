@@ -19,8 +19,6 @@ from sensor_msgs.msg import PointCloud2
 
 class MinimalSubscriber(Node):
 
-    message_counter = 0
-
     def __init__(self):
         super().__init__("lidar_subscriber")
         self.subscription = self.create_subscription(
@@ -31,9 +29,6 @@ class MinimalSubscriber(Node):
 
 
     def listener_callback(self, msg: PointCloud2):
-        if(msg):
-            self.message_counter += 1
-        self.get_logger().info('Message counter: "%s"' % self.message_counter)
         # käpistele==refine data here
         self.publisher_.publish(msg)
 

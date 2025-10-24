@@ -18,8 +18,6 @@ from sensor_msgs.msg import Image
 
 class MinimalSubscriber(Node):
 
-    message_counter = 0
-
     def __init__(self):
         super().__init__("flir_subscriber")
         self.subscription = self.create_subscription(
