@@ -15,7 +15,8 @@
 import rclpy
 from rclpy.node import Node
 
-from std_msgs.msg import String
+from sensor_msgs.msg import PointCloud2
+from sensor_msgs.msg import Image
 
 
 class DataSenderNode(Node):
@@ -23,23 +24,23 @@ class DataSenderNode(Node):
     def __init__(self):
         super().__init__('data_sender')
         self.create_subscription(
-            String,
+            Image,
             '/flir_refined',
             self.flir_callback,
             1)
         
         self.create_subscription(
-            String,
+            PointCloud2,
             '/lidar_refined',
             self.lidar_callback,
             1)
         
 
     def flir_callback(self, msg):
-        self.get_logger().info('I heard flir say stuff')
+        self.get_logger().info('Message in /flir_refined')
 
     def lidar_callback(self, msg):
-        self.get_logger().info('I heard lidar say things')
+        self.get_logger().info('Message in /lidar_refined')
 
 def main(args=None):
     rclpy.init(args=args)
