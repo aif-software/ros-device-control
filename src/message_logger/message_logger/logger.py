@@ -70,7 +70,7 @@ class Logger(Node):
             count = self.logging_data[key]["count"]
             ltime = self.logging_data[key]["lmt"]
             dtime = self.logging_data[key]["dtime"]
-            delta = dt.now() - ltime
+            delta = None if ltime == None else dt.now() - ltime
             log_string = (
                 f"Device: {key}\n"
                 f"Message count: {count}\n"
