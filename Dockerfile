@@ -1,5 +1,8 @@
 FROM ros:jazzy-ros-core
 
+# set runtime environment variables
+ENV ROS_DOMAIN_ID=69
+
 # setup working directory
 WORKDIR /app
 
