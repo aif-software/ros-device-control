@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from functools import partial
 import rclpy
 from rclpy.node import Node
 
@@ -28,47 +29,51 @@ class Logger(Node):
 
         # Create datastruct
         self.logging_data = {
-            "lidar": {"count": 0, "lmt": None},
-            "flir": {"count": 0, "lmt": None},
-            "stereo_camera": {"count": 0, "lmt": None},
+            "lidar": {"count": 0, "lmt": None, "dtime": None},
+            "flir": {"count": 0, "lmt": None, "dtime": None},
+            "stereo_camera": {"count": 0, "lmt": None, "dtime": None},
         }
 
         # Create subscription handlers
         self.create_subscription(
-            PointCloud2, "/lidar_points", self.lidar_listener_callback, 1
+            PointCloud2,
+            "/lidar_points",
+            partial(self.listener_callback, device="lidar"),
+            1,
         )
         self.create_subscription(
-            Image, "/aux/image_mono", self.multisense_listener_callback, 1
+            Image,
+            "/aux/image_mono",
+            partial(self.listener_callback, device="stereo_camera"),
+            1,
         )
-        self.create_subscription(Image, "/image_raw", self.flir_listener_callback, 1)
+        self.create_subscription(
+            Image, "/image_raw", partial(self.listener_callback, device="flir"), 1
+        )
 
         # Create timer handler
         self.create_timer(10, self.timer_callback)
 
-    # TODO: Combine these listeners into 1.
-    def lidar_listener_callback(self, msg: PointCloud2):
+    def listener_callback(self, msg, device):
         if msg:
-            self.logging_data["lidar"]["count"] += 1
-            self.logging_data["lidar"]["lmt"] = dt.now()
-
-    def flir_listener_callback(self, msg: Image):
-        if msg:
-            self.logging_data["flir"]["count"] += 1
-            self.logging_data["flir"]["lmt"] = dt.now()
-
-    def multisense_listener_callback(self, msg: Image):
-        if msg:
-            self.logging_data["stereo_camera"]["count"] += 1
-            self.logging_data["stereo_camera"]["lmt"] = dt.now()
+            self.logging_data[device]["count"] += 1
+            self.logging_data[device]["lmt"] = dt.now()
+            self.logging_data[device]["dtime"] = msg.header.stamp
 
     def timer_callback(self):
         logger = self.get_logger()
-        for key in self.logging_data.keys():
-            log_string = f"Logging for: {key}, No data."
-            if self.logging_data[key]["count"] != 0:
-                count = self.logging_data[key]["count"]
-                delta = dt.now() - self.logging_data[key]["lmt"]
-                log_string = f"Logging for: {key}, Message count: {count}, Time since last message: {delta}"
+        for key in self.logging_data:
+            count = self.logging_data[key]["count"]
+            ltime = self.logging_data[key]["lmt"]
+            dtime = self.logging_data[key]["dtime"]
+            delta = None if ltime == None else dt.now() - ltime
+            log_string = (
+                f"Device: {key}\n"
+                f"Message count: {count}\n"
+                f"Time since last message: {delta}\n"
+                f"Last message time: {ltime}\n"
+                f"Device time: {dtime}"
+            )
             logger.info(log_string)
 
 
@@ -79,9 +84,7 @@ def main(args=None):
 
     rclpy.spin(minimal_subscriber)
 
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
+    # Excplicitly destroy the node. It will also be GC:d if not destroyed here.
     minimal_subscriber.destroy_node()
     rclpy.shutdown()
 
