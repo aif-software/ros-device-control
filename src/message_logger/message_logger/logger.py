@@ -28,9 +28,9 @@ class Logger(Node):
 
         # Create datastruct
         self.logging_data = {
-            "lidar": {"count": 0, "lmt": None},
-            "flir": {"count": 0, "lmt": None},
-            "stereo_camera": {"count": 0, "lmt": None},
+            "lidar": {"count": 0, "lmt": None, "dtime": None},
+            "flir": {"count": 0, "lmt": None, "dtime": None},
+            "stereo_camera": {"count": 0, "lmt": None, "dtime": None},
         }
 
         # Create subscription handlers
@@ -50,25 +50,34 @@ class Logger(Node):
         if msg:
             self.logging_data["lidar"]["count"] += 1
             self.logging_data["lidar"]["lmt"] = dt.now()
+            self.logging_data["lidar"]["dtime"] = msg.header.stamp
 
     def flir_listener_callback(self, msg: Image):
         if msg:
             self.logging_data["flir"]["count"] += 1
             self.logging_data["flir"]["lmt"] = dt.now()
+            self.logging_data["flir"]["dtime"] = msg.header.stamp
 
     def multisense_listener_callback(self, msg: Image):
         if msg:
             self.logging_data["stereo_camera"]["count"] += 1
             self.logging_data["stereo_camera"]["lmt"] = dt.now()
+            self.logging_data["stereo_camera"]["dtime"] = msg.header.stamp
 
     def timer_callback(self):
         logger = self.get_logger()
-        for key in self.logging_data.keys():
-            log_string = f"Logging for: {key}, No data."
-            if self.logging_data[key]["count"] != 0:
-                count = self.logging_data[key]["count"]
-                delta = dt.now() - self.logging_data[key]["lmt"]
-                log_string = f"Logging for: {key}, Message count: {count}, Time since last message: {delta}"
+        for key in self.logging_data:
+            count = self.logging_data[key]["count"]
+            ltime = self.logging_data[key]["lmt"]
+            dtime = self.logging_data[key]["dtime"]
+            delta = dt.now() - ltime
+            log_string = (
+                f"Device: {key}\n"
+                f"Message count: {count}\n"
+                f"Time since last message: {delta}\n"
+                f"Last message time: {ltime}\n"
+                f"Device time: {dtime}"
+            )
             logger.info(log_string)
 
 
@@ -79,9 +88,7 @@ def main(args=None):
 
     rclpy.spin(minimal_subscriber)
 
-    # Destroy the node explicitly
-    # (optional - otherwise it will be done automatically
-    # when the garbage collector destroys the node object)
+    # Excplicitly destroy the node. It will also be GC:d if not destroyed here.
     minimal_subscriber.destroy_node()
     rclpy.shutdown()
 
