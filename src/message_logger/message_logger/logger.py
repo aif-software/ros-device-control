@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from functools import partial
 import rclpy
 from rclpy.node import Node
 
@@ -35,34 +36,29 @@ class Logger(Node):
 
         # Create subscription handlers
         self.create_subscription(
-            PointCloud2, "/lidar_points", self.lidar_listener_callback, 1
+            PointCloud2,
+            "/lidar_points",
+            partial(self.listener_callback, device="lidar"),
+            1,
         )
         self.create_subscription(
-            Image, "/aux/image_mono", self.multisense_listener_callback, 1
+            Image,
+            "/aux/image_mono",
+            partial(self.listener_callback, device="stereo_camera"),
+            1,
         )
-        self.create_subscription(Image, "/image_raw", self.flir_listener_callback, 1)
+        self.create_subscription(
+            Image, "/image_raw", partial(self.listener_callback, device="flir"), 1
+        )
 
         # Create timer handler
         self.create_timer(10, self.timer_callback)
 
-    # TODO: Combine these listeners into 1.
-    def lidar_listener_callback(self, msg: PointCloud2):
+    def listener_callback(self, msg, device):
         if msg:
-            self.logging_data["lidar"]["count"] += 1
-            self.logging_data["lidar"]["lmt"] = dt.now()
-            self.logging_data["lidar"]["dtime"] = msg.header.stamp
-
-    def flir_listener_callback(self, msg: Image):
-        if msg:
-            self.logging_data["flir"]["count"] += 1
-            self.logging_data["flir"]["lmt"] = dt.now()
-            self.logging_data["flir"]["dtime"] = msg.header.stamp
-
-    def multisense_listener_callback(self, msg: Image):
-        if msg:
-            self.logging_data["stereo_camera"]["count"] += 1
-            self.logging_data["stereo_camera"]["lmt"] = dt.now()
-            self.logging_data["stereo_camera"]["dtime"] = msg.header.stamp
+            self.logging_data[device]["count"] += 1
+            self.logging_data[device]["lmt"] = dt.now()
+            self.logging_data[device]["dtime"] = msg.header.stamp
 
     def timer_callback(self):
         logger = self.get_logger()
