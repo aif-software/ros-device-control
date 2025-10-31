@@ -28,6 +28,18 @@ def generate_launch_description():
                 ],
             ),
             Node(
+                name="flir_driver",
+                package="v4l2_camera",
+                executable="v4l2_camera_node",
+                parameters=[
+                    {
+                        "output_encoding": "mono16",
+                        "pixel_format": "Y16 ",
+                        "video_device": "/dev/video6",
+                    }
+                ],
+            ),
+            Node(
                 name="flir_listener",
                 package="python_flir_subscriber",
                 executable="listener",
