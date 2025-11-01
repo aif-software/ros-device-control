@@ -33,63 +33,56 @@ topics_info = [
     {"name": "/right/image_rect", "type": Image, "typestring": "sensor_msgs/msg/Image"},
 ]
 
-
 # INFO: I don't like python...
 class SimpleBagRecorder(Node):
     # Define class constructor
     def __init__(self):
         super().__init__("simple_bag_recorder")
-        logger = self.get_logger()
+        self.logger = self.get_logger()
         # Create a writer object for storing data in a bag
-        self.writer = rosbag2_py.SequentialWriter()
 
-        # Create timestamp so new bags don't collide
+        # Define timestamp and various options
         timestamp = str(time.now()).replace(" ", "_")
-        # Define the writer obj options
         storage_options = rosbag2_py.StorageOptions(
-            uri=f"bags/{timestamp}", storage_id="mcap"
+          uri=f"bags/{timestamp}",
+          storage_id="mcap",
+          max_bagfile_duration=10
         )
+        compression_options = rosbag2_py.CompressionOptions()
+        compression_options.compression_format = 'zstd'
+        compression_options.compression_mode = rosbag2_py.CompressionMode.FILE
+
         converter_options = rosbag2_py.ConverterOptions("", "")
-        # Open the bag with writer + defined options
-        self.writer.open(storage_options, converter_options)
 
-        # Tell writer necessary info for storing topic data.
-        for entry in topics_info:
-            # Define topic metadata
-            topic_info = rosbag2_py.TopicMetadata(
-                id=0,
-                name=entry["name"],
-                type=entry["typestring"],
-                serialization_format="cdr",
-            )
-
-            # Create the topic
-            self.writer.create_topic(topic_info)
-
-            # Create subscription for the topics the writer needs to listen.
-            self.subscription = self.create_subscription(
-                entry["type"],
-                entry["name"],
-                partial(self.data_writing_callback, topic_name=entry["name"]),
-                10,
-            )
-            logger.info(f"Initialized setup for: {entry["name"]}")
-
-    # Define subscription callback for writing data.
-    def data_writing_callback(self, msg, topic_name):
-        logger = self.get_logger()
-        logger.info(f"Topic: {topic_name}")
-        self.writer.write(
-            topic_name, serialize_message(msg), self.get_clock().now().nanoseconds
+        # define other topics in a for loop when needed
+        topic_metadata = rosbag2_py.TopicMetadata(
+            id=0,
+            name='/lidar_points',
+            type='sensor_msgs/msg/PointCloud2',
+            serialization_format='cdr'
         )
 
+        # Create writer instance with CompressionOptions
+        self.writer = rosbag2_py.SequentialCompressionWriter(compression_options)
+        self.writer.open(storage_options, converter_options)
+        self.writer.create_topic(topic_metadata)
+        
+        # Currently only subscribes to /lidar_points. flirs should be added for poc
+        self.sub = self.create_subscription(PointCloud2, '/lidar_points', self.topic_callback, 10)
+
+    # dis bad hardcoding sory
+    def topic_callback(self, msg):
+        self.writer.write(
+            '/lidar_points',
+            serialize_message(msg),
+            self.get_clock().now().nanoseconds
+        )
 
 def main(args=None):
     rclpy.init(args=args)
     sbr = SimpleBagRecorder()
     rclpy.spin(sbr)
     rclpy.shutdown()
-
 
 if __name__ == "__main__":
     main()
