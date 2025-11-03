@@ -32,48 +32,49 @@
 namespace v4l2_camera
 {
 
-class V4L2Camera : public rclcpp::Node
-{
-public:
-  explicit V4L2Camera(rclcpp::NodeOptions const & options);
+  class V4L2Camera : public rclcpp::Node
+  {
+  public:
+    explicit V4L2Camera(rclcpp::NodeOptions const &options);
 
-  virtual ~V4L2Camera();
+    virtual ~V4L2Camera();
 
-private:
-  Parameters parameters_;
+  private:
+    Parameters parameters_;
 
-  std::shared_ptr<V4l2CameraDevice> camera_;
+    std::shared_ptr<V4l2CameraDevice> camera_;
 
-  // Publisher used for intra process comm
-  rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr image_pub_;
-  rclcpp::Publisher<sensor_msgs::msg::CameraInfo>::SharedPtr info_pub_;
+    // Publisher used for intra process comm
+    rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr image_pub_;
+    rclcpp::Publisher<sensor_msgs::msg::CameraInfo>::SharedPtr info_pub_;
 
-  // Publisher used for inter process comm
-  image_transport::CameraPublisher camera_transport_pub_;
+    // Publisher used for inter process comm
+    image_transport::CameraPublisher camera_transport_pub_;
+    image_transport::CameraPublisher camera_transport_pub_2;
 
-  std::shared_ptr<camera_info_manager::CameraInfoManager> cinfo_;
+    std::shared_ptr<camera_info_manager::CameraInfoManager> cinfo_;
 
-  std::thread capture_thread_;
-  std::atomic<bool> canceled_;
+    std::thread capture_thread_;
+    std::atomic<bool> canceled_;
 
-  std::string camera_frame_id_;
-  std::string output_encoding_;
+    std::string camera_frame_id_;
+    std::string output_encoding_;
 
-  rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr on_set_parameters_callback_;
+    rclcpp::node_interfaces::OnSetParametersCallbackHandle::SharedPtr on_set_parameters_callback_;
 
-  void applyParameters();
-  bool handleParameter(rclcpp::Parameter const & param);
+    void applyParameters();
+    bool handleParameter(rclcpp::Parameter const &param);
 
-  bool requestPixelFormat(std::string const & fourcc);
-  bool requestImageSize(std::vector<int64_t> const & size);
+    bool requestPixelFormat(std::string const &fourcc);
+    bool requestImageSize(std::vector<int64_t> const &size);
 
-  sensor_msgs::msg::Image::UniquePtr convert(sensor_msgs::msg::Image const & img) const;
+    sensor_msgs::msg::Image::UniquePtr convert(sensor_msgs::msg::Image const &img) const;
 
-  bool checkCameraInfo(
-    sensor_msgs::msg::Image const & img,
-    sensor_msgs::msg::CameraInfo const & ci);
-};
+    bool checkCameraInfo(
+        sensor_msgs::msg::Image const &img,
+        sensor_msgs::msg::CameraInfo const &ci);
+  };
 
-}  // namespace v4l2_camera
+} // namespace v4l2_camera
 
-#endif  // V4L2_CAMERA__V4L2_CAMERA_HPP_
+#endif // V4L2_CAMERA__V4L2_CAMERA_HPP_
