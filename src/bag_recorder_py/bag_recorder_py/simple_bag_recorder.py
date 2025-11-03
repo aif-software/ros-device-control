@@ -40,8 +40,6 @@ class SimpleBagRecorder(Node):
     def __init__(self):
         super().__init__("simple_bag_recorder")
         logger = self.get_logger()
-        # Create a writer object for storing data in a bag
-        self.writer = rosbag2_py.SequentialWriter()
 
         # Create timestamp so new bags don't collide
         timestamp = str(time.now()).replace(" ", "_")
@@ -49,7 +47,18 @@ class SimpleBagRecorder(Node):
         storage_options = rosbag2_py.StorageOptions(
             uri=f"bags/{timestamp}", storage_id="mcap"
         )
+
+        # Compression options
+        compression_options = rosbag2_py.CompressionOptions()
+        compression_options.compression_format = "zstd"
+        compression_options.compression_mode = rosbag2_py.CompressionMode.FILE
+
+        # Converter options
         converter_options = rosbag2_py.ConverterOptions("", "")
+
+        # Create a writer object for storing data in a bag
+        self.writer = rosbag2_py.SequentialCompressionWriter(compression_options)
+
         # Open the bag with writer + defined options
         self.writer.open(storage_options, converter_options)
 
@@ -80,7 +89,7 @@ class SimpleBagRecorder(Node):
         logger = self.get_logger()
         logger.info(f"Topic: {topic_name}")
         self.writer.write(
-            topic_name, serialize_message(msg), self.get_clock().now().nanoseconds
+            topic_name, str(serialize_message(msg)), self.get_clock().now().nanoseconds
         )
 
 
