@@ -2,52 +2,10 @@ from functools import partial
 import rclpy
 from rclpy.node import Node
 from rclpy.serialization import serialize_message
-from sensor_msgs.msg import PointCloud2, Image
 from datetime import datetime as time
 
 import rosbag2_py
-
-# I have opted to define this here for some reason.
-topics_info = [
-    # Lidar
-    {
-        "name": "/lidar_points",
-        "type": PointCloud2,
-        "typestring": "sensor_msgs/msg/PointCloud2",
-    },
-    # Flir
-    {
-        "name": "/image_raw",
-        "type": Image,
-        "typestring": "sensor_msgs/msg/Image",
-    },
-    # Stereo camera
-    {
-        "name": "/aux/image_color",
-        "type": Image,
-        "typestring": "sensor_msgs/msg/Image",
-    },
-    {
-        "name": "/left/cost",
-        "type": Image,
-        "typestring": "sensor_msgs/msg/Image",
-    },
-    {
-        "name": "/left/depth",
-        "type": Image,
-        "typestring": "sensor_msgs/msg/Image",
-    },
-    {
-        "name": "/left/image_rect",
-        "type": Image,
-        "typestring": "sensor_msgs/msg/Image",
-    },
-    {
-        "name": "/right/image_rect",
-        "type": Image,
-        "typestring": "sensor_msgs/msg/Image",
-    },
-]
+from topics_info import info
 
 
 # INFO: I don't like python...
@@ -85,7 +43,7 @@ class SimpleBagRecorder(Node):
         self.writer.open(storage_options, converter_options)
 
         # Tell writer necessary info for storing topic data.
-        for entry in topics_info:
+        for entry in info:
             # Define topic metadata
             topic_info = rosbag2_py.TopicMetadata(
                 id=0,
