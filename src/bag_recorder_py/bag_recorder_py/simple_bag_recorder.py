@@ -5,7 +5,7 @@ from rclpy.serialization import serialize_message
 from datetime import datetime as time
 
 import rosbag2_py
-from topics_info import info
+from .topics_info import info
 
 
 # INFO: I don't like python...
