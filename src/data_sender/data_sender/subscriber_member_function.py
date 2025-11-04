@@ -18,29 +18,63 @@ from rclpy.node import Node
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs.msg import Image
 
+from queue import Queue
+import threading
+
 
 class DataSenderNode(Node):
 
     def __init__(self):
-        super().__init__('data_sender')
-        self.create_subscription(
-            Image,
-            '/flir_refined',
-            self.flir_callback,
-            1)
-        
-        self.create_subscription(
-            PointCloud2,
-            '/lidar_refined',
-            self.lidar_callback,
-            1)
-        
+        super().__init__("data_sender")
 
-    def flir_callback(self, msg):
-        self.get_logger().info('Message in /flir_refined')
+        # Create queue for storing data before sending
+        self.queue = Queue()
 
-    def lidar_callback(self, msg):
-        self.get_logger().info('Message in /lidar_refined')
+        # Create subscriptions for refined topics
+        self.create_subscription(Image, "/flir_refined", self.flir_callback, 1)
+        self.create_subscription(PointCloud2, "/lidar_refined", self.lidar_callback, 1)
+
+        # Create timer for flushing the queue
+        self.create_timer(5, self.flush_queue)
+
+    # Subscriber callback for Flir
+    def flir_callback(self, msg: Image):
+        self.get_logger().info("Message in /flir_refined")
+        data = {"device": "flir", "value": msg.data, "time": msg.header.stamp}
+        self.queue.put(data)
+
+    # Subscriber callback for Lidar
+    def lidar_callback(self, msg: PointCloud2):
+        self.get_logger().info("Message in /lidar_refined")
+        data = {"device": "lidar", "value": msg.data, "time": msg.header.stamp}
+        self.queue.put(data)
+
+    # TODO: Implement!!!
+    def send_data(self, batch):
+        logger = self.get_logger()
+        logger.info("Sending data...")
+        logger.info(f"Batch length: {len(batch)}")
+
+    # INFO: I'm not sure does the whole flush_queue function block the
+    # subscriber threads and if it does the threading needs to be moved one-level up.
+    def flush_queue(self):
+        self.get_logger().info("Flushing queue...")
+
+        # List which is to be sent to the receiver
+        batch = []
+        # This is now restricted because some devices send a lot of data.
+        while not self.queue.empty() and len(batch) <= 1000:
+            batch.append(self.queue.get())
+
+        # Return no empty batch
+        if not batch:
+            return
+
+        # This is done with threading because we don't want the timer
+        # blocking any resources in case the sending takes a lot of time.
+        self.get_logger().info("Starting thread...")
+        threading.Thread(target=self.send_data, args=(batch,), daemon=True).start()
+
 
 def main(args=None):
     rclpy.init(args=args)
@@ -56,5 +90,5 @@ def main(args=None):
     rclpy.shutdown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
