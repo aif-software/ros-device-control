@@ -55,29 +55,33 @@ class SimpleBagRecorder(Node):
     # Define class constructor
     def __init__(self):
         super().__init__("simple_bag_recorder")
+
+        # Get the node logger
         logger = self.get_logger()
 
         # Create timestamp so new bags don't collide
         timestamp = str(time.now()).replace(" ", "_")
-        # Define the writer obj options
+
+        # Storage options
         storage_options = rosbag2_py.StorageOptions(
             uri=f"bags/{timestamp}",
             storage_id="mcap",
             max_bagfile_duration=10,
         )
 
-        # Compression options
-        compression_options = rosbag2_py.CompressionOptions()
-        compression_options.compression_format = "zstd"
-        compression_options.compression_mode = rosbag2_py.CompressionMode.FILE
+        # Setup compression options
+        compression_options = rosbag2_py.CompressionOptions(
+            compression_format="zstd",
+            compression_mode=rosbag2_py.CompressionMode.FILE,
+        )
 
-        # Converter options
+        # Setup converter options
         converter_options = rosbag2_py.ConverterOptions("", "")
 
         # Create a writer object for storing data in a bag
         self.writer = rosbag2_py.SequentialCompressionWriter(compression_options)
 
-        # Open the bag with writer + defined options
+        # Open/Create the bag with the writer
         self.writer.open(storage_options, converter_options)
 
         # Tell writer necessary info for storing topic data.
@@ -107,8 +111,6 @@ class SimpleBagRecorder(Node):
 
     # Define subscription callback for writing data.
     def data_writing_callback(self, msg, topic_name):
-        logger = self.get_logger()
-        logger.info(f"Topic: {topic_name}")
         self.writer.write(
             topic_name,
             str(serialize_message(msg)),
