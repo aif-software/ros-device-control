@@ -61,7 +61,9 @@ class SimpleBagRecorder(Node):
         timestamp = str(time.now()).replace(" ", "_")
         # Define the writer obj options
         storage_options = rosbag2_py.StorageOptions(
-            uri=f"bags/{timestamp}", storage_id="mcap"
+            uri=f"bags/{timestamp}",
+            storage_id="mcap",
+            max_bagfile_duration=10,
         )
 
         # Compression options
@@ -95,7 +97,10 @@ class SimpleBagRecorder(Node):
             self.subscription = self.create_subscription(
                 entry["type"],
                 entry["name"],
-                partial(self.data_writing_callback, topic_name=entry["name"]),
+                partial(
+                    self.data_writing_callback,
+                    topic_name=entry["name"],
+                ),
                 10,
             )
             logger.info(f"Initialized setup for: {entry["name"]}")
@@ -105,7 +110,9 @@ class SimpleBagRecorder(Node):
         logger = self.get_logger()
         logger.info(f"Topic: {topic_name}")
         self.writer.write(
-            topic_name, str(serialize_message(msg)), self.get_clock().now().nanoseconds
+            topic_name,
+            str(serialize_message(msg)),
+            self.get_clock().now().nanoseconds,
         )
 
 
