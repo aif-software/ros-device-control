@@ -26,11 +26,27 @@ topics_info = [
         "name": "/aux/image_color",
         "type": Image,
         "typestring": "sensor_msgs/msg/Image",
-    },  # Stereo camera data
-    {"name": "/left/cost", "type": Image, "typestring": "sensor_msgs/msg/Image"},
-    {"name": "/left/depth", "type": Image, "typestring": "sensor_msgs/msg/Image"},
-    {"name": "/left/image_rect", "type": Image, "typestring": "sensor_msgs/msg/Image"},
-    {"name": "/right/image_rect", "type": Image, "typestring": "sensor_msgs/msg/Image"},
+    },
+    {
+        "name": "/left/cost",
+        "type": Image,
+        "typestring": "sensor_msgs/msg/Image",
+    },
+    {
+        "name": "/left/depth",
+        "type": Image,
+        "typestring": "sensor_msgs/msg/Image",
+    },
+    {
+        "name": "/left/image_rect",
+        "type": Image,
+        "typestring": "sensor_msgs/msg/Image",
+    },
+    {
+        "name": "/right/image_rect",
+        "type": Image,
+        "typestring": "sensor_msgs/msg/Image",
+    },
 ]
 
 
