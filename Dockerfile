@@ -10,7 +10,7 @@ WORKDIR /app
 COPY src src
 
 # copy launch script
-COPY launch/ros_system_launch.py launch.py
+COPY launch/full_system_launch.py launch.py
 
 # install system dependencies
 RUN apt-get update && apt-get install -y \
