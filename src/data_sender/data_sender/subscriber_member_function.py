@@ -21,59 +21,63 @@ from sensor_msgs.msg import Image
 from queue import Queue
 import threading
 
+import paho.mqtt.client as mqtt
 
+
+# TODO: Compress the topic messages.
 class DataSenderNode(Node):
 
     def __init__(self):
         super().__init__("data_sender")
+        self.get_logger().info("Initializing data sender")
 
         # Create queue for storing data before sending
         self.queue = Queue()
 
-        # Create subscriptions for refined topics
-        self.create_subscription(Image, "/flir_refined", self.flir_callback, 1)
-        self.create_subscription(PointCloud2, "/lidar_refined", self.lidar_callback, 1)
+        # Create subscriptions for device data
+        self.create_subscription(Image, "/image_raw", self.flir_callback, 1)
 
         # Create timer for flushing the queue
-        self.create_timer(5, self.flush_queue)
+        self.create_timer(10, self.flush_queue)
+
+        # Create mqtt client connection
+        self.mqtt_client = mqtt.Client()
+        self.mqtt_client.connect("86.50.228.229")
+        self.mqtt_client.loop_start()
 
     # Subscriber callback for Flir
     def flir_callback(self, msg: Image):
-        self.get_logger().info("Message in /flir_refined")
-        data = {"device": "flir", "value": msg.data, "time": msg.header.stamp}
-        self.queue.put(data)
+        self.queue.put(msg)
 
     # Subscriber callback for Lidar
+    # TODO: Implement
     def lidar_callback(self, msg: PointCloud2):
-        self.get_logger().info("Message in /lidar_refined")
-        data = {"device": "lidar", "value": msg.data, "time": msg.header.stamp}
-        self.queue.put(data)
+        self.get_logger().info(msg)
 
-    # TODO: Implement!!!
     def send_data(self, batch):
-        logger = self.get_logger()
-        logger.info("Sending data...")
-        logger.info(f"Batch length: {len(batch)}")
+        for msg in batch:
+            self.mqtt_client.publish("ros2/out", msg)
 
-    # INFO: I'm not sure does the whole flush_queue function block the
+    # WARN: I'm not sure does the whole flush_queue function block the
     # subscriber threads and if it does the threading needs to be moved one-level up.
     def flush_queue(self):
-        self.get_logger().info("Flushing queue...")
+        self.get_logger().info("Flushing queue")
 
         # List which is to be sent to the receiver
         batch = []
+
         # This is now restricted because some devices send a lot of data.
         while not self.queue.empty() and len(batch) <= 1000:
             batch.append(self.queue.get())
 
-        # Return no empty batch
-        if not batch:
-            return
+        # Only start thread on non-empty batches.
+        if batch:
+            # This is done with threading because we don't want the timer
+            # blocking any resources in case the sending takes a lot of time.
+            self.get_logger().info("Starting thread")
+            threading.Thread(target=self.send_data, args=(batch,), daemon=True).start()
 
-        # This is done with threading because we don't want the timer
-        # blocking any resources in case the sending takes a lot of time.
-        self.get_logger().info("Starting thread...")
-        threading.Thread(target=self.send_data, args=(batch,), daemon=True).start()
+        self.get_logger().info("Flushing done")
 
 
 def main(args=None):
