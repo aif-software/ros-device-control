@@ -11,11 +11,6 @@ def generate_launch_description():
                 executable="hesai_ros_driver_node",
             ),
             Node(
-                name="lidar_listener",
-                package="python_lidar_subscriber",
-                executable="listener",
-            ),
-            Node(
                 name="flir_driver",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
@@ -40,14 +35,8 @@ def generate_launch_description():
                 ],
             ),
             Node(
-                name="flir_listener",
-                package="python_flir_subscriber",
-                executable="listener",
-            ),
-            Node(
                 package="multisense_ros",
                 executable="ros_driver",
             ),
-            Node(name="logger", package="message_logger", executable="listener"),
         ]
     )
