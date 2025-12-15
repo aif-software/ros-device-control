@@ -35,7 +35,7 @@ class DataSenderNode(Node):
         self.queue = Queue()
 
         # Create subscriptions for device data
-        self.create_subscription(Image, "/image_raw", self.flir_callback, 1)
+        self.create_subscription(Image, "/image_raw", self.subscription_callback, 1)
 
         # Create timer for flushing the queue
         self.create_timer(10, self.flush_queue)
@@ -45,8 +45,10 @@ class DataSenderNode(Node):
         self.mqtt_client.connect("86.50.228.229")
         self.mqtt_client.loop_start()
 
+        self.get_logger().info("Listening for messages")
+
     # Subscriber callback for Flir
-    def flir_callback(self, msg: Image):
+    def subscription_callback(self, msg: Image):
         self.queue.put(msg)
 
     # Subscriber callback for Lidar
