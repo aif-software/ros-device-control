@@ -29,8 +29,8 @@ class Logger(Node):
 
         # Create datastruct
         self.logging_data = {
-            "lidar": {"count": 0, "lmt": None, "dtime": None},
-            "flir": {"count": 0, "lmt": None, "dtime": None},
+            "lidar": {"count": 0, "mtime": None, "dtime": None},
+            "flir": {"count": 0, "mtime": None, "dtime": None},
             "stereo_camera": {"count": 0, "lmt": None, "dtime": None},
         }
 
@@ -43,7 +43,7 @@ class Logger(Node):
         )
         self.create_subscription(
             Image,
-            "/aux/image_mono",
+            "/right/image_rect",
             partial(self.listener_callback, device="stereo_camera"),
             1,
         )
@@ -57,21 +57,21 @@ class Logger(Node):
     def listener_callback(self, msg, device):
         if msg:
             self.logging_data[device]["count"] += 1
-            self.logging_data[device]["lmt"] = dt.now()
+            self.logging_data[device]["mtime"] = dt.now()
             self.logging_data[device]["dtime"] = msg.header.stamp
 
     def timer_callback(self):
         logger = self.get_logger()
         for key in self.logging_data:
             count = self.logging_data[key]["count"]
-            ltime = self.logging_data[key]["lmt"]
+            mtime = self.logging_data[key]["mtime"]
             dtime = self.logging_data[key]["dtime"]
-            delta = None if ltime == None else dt.now() - ltime
+            delta = None if mtime == None else dt.now() - mtime
             log_string = (
                 f"Device: {key}\n"
                 f"Message count: {count}\n"
-                f"Time since last message: {delta}\n"
-                f"Last message time: {ltime}\n"
+                f"Delta time: {delta}\n"
+                f"Message time: {mtime}\n"
                 f"Device time: {dtime}"
             )
             logger.info(log_string)

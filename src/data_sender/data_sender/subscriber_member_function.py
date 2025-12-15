@@ -14,6 +14,7 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy_message_converter import json_message_converter as jmc
 
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs.msg import Image
@@ -22,6 +23,7 @@ from queue import Queue
 import threading
 
 import paho.mqtt.client as mqtt
+import json
 
 topic_info = [
     {
@@ -73,7 +75,8 @@ class DataSenderNode(Node):
 
     # Subscriber callback (Everybody uses the same function).
     def subscription_callback(self, msg):
-        self.queue.put(msg)
+        payload = jmc.convert_ros_message_to_json(msg)
+        self.queue.put(payload)
 
     def send_data(self, batch):
         for msg in batch:
