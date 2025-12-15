@@ -14,13 +14,16 @@ COPY launch/full_system_launch.py launch.py
 
 # install system dependencies
 RUN apt-get update && apt-get install -y \
-    ros-jazzy-foxglove-bridge \
-    python3-paho-mqtt \
-    python3-zstandard \
     libboost-all-dev \
     libyaml-cpp-dev \
     build-essential \
     cmake \
+    ros-jazzy-foxglove-bridge \
+    ros-jazzy-rosbag2-transport \
+    ros-jazzy-rosbag2-storage-sqlite3 \
+    ros-jazzy-rosbag2-storage-mcap \
+    python3-paho-mqtt \
+    python3-zstandard \
     python3-colcon-common-extensions \
     python3-rosdep
 
