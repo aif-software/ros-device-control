@@ -54,6 +54,11 @@ def generate_launch_description():
                 package="message_logger",
                 executable="listener",
             ),
+            # Data sender
+            Node(
+                package="data_sender",
+                executable="talker",
+            ),
             # Rosbag
             launch.actions.ExecuteProcess(
                 cmd=["ros2", "bag", "record", "-a", "--output", "launch_record"]
