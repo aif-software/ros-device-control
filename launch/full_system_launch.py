@@ -44,17 +44,19 @@ def generate_launch_description():
                 package="multisense_ros",
                 executable="ros_driver",
             ),
-            # Logger
-            Node(
-                package="message_logger",
-                executable="listener",
-            ),
             # Foxglove bridge
             Node(
                 package="foxglove_bridge",
                 executable="foxglove_bridge",
             ),
+            # Logger
+            Node(
+                package="message_logger",
+                executable="listener",
+            ),
             # Rosbag
-            launch.actions.ExecuteProcess(cmd=["ros2", "bag", "record", "-a"]),
+            launch.actions.ExecuteProcess(
+                cmd=["ros2", "bag", "record", "-a", "--output", "launch_record"]
+            ),
         ]
     )
