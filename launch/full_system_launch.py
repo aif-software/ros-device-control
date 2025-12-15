@@ -61,7 +61,7 @@ def generate_launch_description():
             ),
             # Rosbag
             launch.actions.ExecuteProcess(
-                cmd=["ros2", "bag", "record", "-a", "--output", "launch_record"]
+                cmd=["ros2", "bag", "record", "-a", "--output", "bags"]
             ),
         ]
     )
