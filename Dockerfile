@@ -12,6 +12,8 @@ COPY src src
 # copy launch script
 COPY launch/full_system_launch.py launch.py
 
+RUN mkdir bags
+
 # install system dependencies
 RUN apt-get update && apt-get install -y \
     libboost-all-dev \

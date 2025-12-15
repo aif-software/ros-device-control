@@ -48,7 +48,7 @@ on where the device actually lands on your computer.
 docker build -t ros-devices .
 
 # Run container
-docker run --device=/dev/video0:/dev/video4 --device=/dev/video2:/dev/video6 --mount type=bind,src=bags,dst=launch_record --network=host ros-devices:latest
+docker run --device=/dev/video0:/dev/video4 --device=/dev/video2:/dev/video6 --network=host ros-devices:latest
 ```
 
 ## ROS node architecture
