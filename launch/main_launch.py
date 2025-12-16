@@ -49,17 +49,17 @@ def generate_launch_description():
                 executable="ros_driver",
             ),
             # Foxglove bridge
-            Node(
-                name="foxglove_bridge",
-                package="foxglove_bridge",
-                executable="foxglove_bridge",
-            ),
+            # Node(
+            #    name="foxglove_bridge",
+            #    package="foxglove_bridge",
+            #    executable="foxglove_bridge",
+            # ),
             # Data sender
-            Node(
-                name="data_sender",
-                package="data_sender",
-                executable="talker",
-            ),
+            # Node(
+            #    name="data_sender",
+            #    package="data_sender",
+            #    executable="talker",
+            # ),
             # Rosbag
             launch.actions.ExecuteProcess(
                 cmd=[
