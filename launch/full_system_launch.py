@@ -49,11 +49,6 @@ def generate_launch_description():
                 package="foxglove_bridge",
                 executable="foxglove_bridge",
             ),
-            # Logger
-            Node(
-                package="message_logger",
-                executable="listener",
-            ),
             # Data sender
             Node(
                 package="data_sender",
