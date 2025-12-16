@@ -1,3 +1,4 @@
+    # this can be optimized
 FROM ros:jazzy-ros-core
 
 # set runtime environment variables
@@ -10,9 +11,7 @@ WORKDIR /app
 COPY src src
 
 # copy launch script
-COPY launch/full_system_launch.py launch.py
-
-RUN mkdir bags
+COPY launch/main_launch.py launch.py
 
 # install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -29,7 +28,7 @@ RUN apt-get update && apt-get install -y \
     python3-colcon-common-extensions \
     python3-rosdep
 
-# install dependencies and build
+# install ros invoked dependencies and build
 # docker RUN commands will initialize new shell so source need to be run.
 RUN . /opt/ros/jazzy/setup.sh && \
     rosdep init &&  \
