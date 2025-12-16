@@ -48,7 +48,24 @@ on where the device actually lands on your computer.
 docker build -t ros-devices .
 
 # Run container
-docker run --device=/dev/video0:/dev/video4 --device=/dev/video2:/dev/video6 --network=host ros-devices:latest
+docker run --device=/dev/video0:/dev/video4 --device=/dev/video2:/dev/video6 --network=host -d ros-devices:latest
+```
+
+### Optional
+
+To help finding video devices install video4linux utilities.
+
+```bash
+sudo apt install v4l-utils
+```
+
+If you are on a distro that doesn't use apt find the corresponding package by yourself.
+This package for example is on the arch repo with the same name.
+
+After installing the utilities you can find cameras with
+
+```bash
+v4l2-ctl --list-devices
 ```
 
 ## ROS node architecture
