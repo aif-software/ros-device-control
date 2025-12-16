@@ -48,7 +48,7 @@ on where the device actually lands on your computer.
 docker build -t ros-devices .
 
 # Run container (in the repository root!)
-docker run --device=/dev/video0:/dev/video4 --device=/dev/video2:/dev/video6 --volume ./bags:/mnt/burak2/ros-device-control/bags --network=host -d ros-devices:latest
+docker run --device=/dev/video0:/dev/video4 --device=/dev/video2:/dev/video6 --volume /mnt/burak2/ros-device-control/bags:/app/bags --network=host -d ros-devices:latest
 ```
 
 ### Optional
