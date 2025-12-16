@@ -31,7 +31,7 @@ def generate_launch_description():
             ),
             # Flir 2
             Node(
-                name="flir_driver",
+                name="flir_driver2",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
                 parameters=[
@@ -44,16 +44,19 @@ def generate_launch_description():
             ),
             # Stereocamera
             Node(
+                name="stereocamera_driver",
                 package="multisense_ros",
                 executable="ros_driver",
             ),
             # Foxglove bridge
             Node(
+                name="foxglove_bridge",
                 package="foxglove_bridge",
                 executable="foxglove_bridge",
             ),
             # Data sender
             Node(
+                name="data_sender",
                 package="data_sender",
                 executable="talker",
             ),
@@ -63,9 +66,14 @@ def generate_launch_description():
                     "ros2",
                     "bag",
                     "record",
-                    "--compression-format zstd",
-                    "--compression-mode file",
-                    "--max-bag-duration 10",
+                    "--max-bag-duration",
+                    "10",
+                    "--compression-mode",
+                    "file",
+                    "--compression-format",
+                    "zstd",
+                    "--output",
+                    f"bags/{time}",
                     "--topics",
                     "/lidar_points",
                     "/image_raw",
@@ -76,8 +84,8 @@ def generate_launch_description():
                     "/right/image_rect",
                     "/image_raw2",
                     "/lidar_imu",
-                    f"--output bags/{time}",
-                ]
+                ],
+                output="screen",
             ),
         ]
     )
