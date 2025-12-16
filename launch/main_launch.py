@@ -1,10 +1,13 @@
 import launch
+import datetime as dt
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    time = str(dt.datetime.now()).replace(" ", "_").replace(":", "-")
+
     return LaunchDescription(
         [
             # Lidar
@@ -56,7 +59,7 @@ def generate_launch_description():
             ),
             # Rosbag
             launch.actions.ExecuteProcess(
-                cmd=["ros2", "bag", "record", "-a", "--output", "bags"]
+                cmd=["ros2", "bag", "record", "-a", "--output", f"bags/{time}"]
             ),
         ]
     )
