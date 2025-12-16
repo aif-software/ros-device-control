@@ -59,7 +59,25 @@ def generate_launch_description():
             ),
             # Rosbag
             launch.actions.ExecuteProcess(
-                cmd=["ros2", "bag", "record", "-a", "--output", f"bags/{time}"]
+                cmd=[
+                    "ros2",
+                    "bag",
+                    "record",
+                    "--compression-format zstd",
+                    "--compression-mode file",
+                    "--max-bag-duration 10",
+                    "--topics",
+                    "/lidar_points",
+                    "/image_raw",
+                    "/aux/image_color",
+                    "/left/cost",
+                    "/left/depth",
+                    "/left/image_rect",
+                    "/right/image_rect",
+                    "/image_raw2",
+                    "/lidar_imu",
+                    f"--output bags/{time}",
+                ]
             ),
         ]
     )
