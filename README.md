@@ -21,7 +21,8 @@ colcon build
 ```
 
 ## Running
-The package names can be found in src/<project-folder>/package.xml. 
+
+The package names can be found in src/<project-folder>/package.xml.
 There is a line called "name" which tells the name of the specific package.
 
 This is not to be confused with the folder name which can be whatever.
@@ -46,8 +47,25 @@ on where the device actually lands on your computer.
 # Build image
 docker build -t ros-devices .
 
-# Run container
-docker run --device=/dev/video0:/dev/video4 --network=host ros-devices:latest
+# Run container (in the repository root!)
+docker run --device=/dev/video0:/dev/video4 --device=/dev/video2:/dev/video6 --volume /mnt/burak2/ros-device-control/bags:/app/bags --network=host -d ros-devices:latest
+```
+
+### Optional
+
+To help finding video devices install video4linux utilities.
+
+```bash
+sudo apt install v4l-utils
+```
+
+If you are on a distro that doesn't use apt find the corresponding package by yourself.
+This package for example is on the arch repo with the same name.
+
+After installing the utilities you can find cameras with
+
+```bash
+v4l2-ctl --list-devices
 ```
 
 ## ROS node architecture

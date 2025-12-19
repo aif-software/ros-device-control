@@ -14,6 +14,7 @@
 
 import rclpy
 from rclpy.node import Node
+from rclpy_message_converter import json_message_converter as jmc
 
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs.msg import Image
@@ -22,6 +23,25 @@ from queue import Queue
 import threading
 
 import paho.mqtt.client as mqtt
+import json
+
+topic_info = [
+    {
+        "device": "flir",
+        "topic": "/image_raw",
+        "type": Image,
+    },
+    {
+        "device": "stereocamera",
+        "topic": "/aux/image_mono",
+        "type": Image,
+    },
+    {
+        "device": "lidar",
+        "topic": "/lidar_points",
+        "type": PointCloud2,
+    },
+]
 
 
 # TODO: Compress the topic messages.
@@ -29,13 +49,19 @@ class DataSenderNode(Node):
 
     def __init__(self):
         super().__init__("data_sender")
-        self.get_logger().info("Initializing data sender")
+        self.get_logger().info("initializing data sender...")
 
         # Create queue for storing data before sending
         self.queue = Queue()
 
-        # Create subscriptions for device data
-        self.create_subscription(Image, "/image_raw", self.flir_callback, 1)
+        # Create subscriptions for devices
+        for info in topic_info:
+            self.create_subscription(
+                msg_type=info["type"],
+                topic=info["topic"],
+                callback=self.subscription_callback,
+                qos_profile=1,
+            )
 
         # Create timer for flushing the queue
         self.create_timer(10, self.flush_queue)
@@ -45,23 +71,21 @@ class DataSenderNode(Node):
         self.mqtt_client.connect("86.50.228.229")
         self.mqtt_client.loop_start()
 
-    # Subscriber callback for Flir
-    def flir_callback(self, msg: Image):
-        self.queue.put(msg)
+        self.get_logger().info("data sender initialized.")
 
-    # Subscriber callback for Lidar
-    # TODO: Implement
-    def lidar_callback(self, msg: PointCloud2):
-        self.get_logger().info(msg)
+    # Subscriber callback (Everybody uses the same function).
+    def subscription_callback(self, msg):
+        payload = jmc.convert_ros_message_to_json(msg)
+        self.queue.put(payload)
 
     def send_data(self, batch):
         for msg in batch:
-            self.mqtt_client.publish("ros2/out", msg)
+            self.mqtt_client.publish("ros2/sensors", msg)
 
     # WARN: I'm not sure does the whole flush_queue function block the
     # subscriber threads and if it does the threading needs to be moved one-level up.
     def flush_queue(self):
-        self.get_logger().info("Flushing queue")
+        self.get_logger().info("flushing queue...")
 
         # List which is to be sent to the receiver
         batch = []
@@ -74,10 +98,10 @@ class DataSenderNode(Node):
         if batch:
             # This is done with threading because we don't want the timer
             # blocking any resources in case the sending takes a lot of time.
-            self.get_logger().info("Starting thread")
+            self.get_logger().info("starting thread")
             threading.Thread(target=self.send_data, args=(batch,), daemon=True).start()
 
-        self.get_logger().info("Flushing done")
+        self.get_logger().info("flushing done.")
 
 
 def main(args=None):
