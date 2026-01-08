@@ -50,7 +50,6 @@ namespace v4l2_camera
 
     // Publisher used for inter process comm
     image_transport::CameraPublisher camera_transport_pub_;
-    image_transport::CameraPublisher camera_transport_pub_2;
 
     std::shared_ptr<camera_info_manager::CameraInfoManager> cinfo_;
 
