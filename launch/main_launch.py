@@ -21,6 +21,8 @@ def generate_launch_description():
                 name="flir_driver",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
+                namespace="flir_1",
+                remappings=[('/image_raw', '/flir_1/image_raw')],
                 parameters=[
                     {
                         "output_encoding": "mono16",
@@ -34,6 +36,8 @@ def generate_launch_description():
                 name="flir_driver2",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
+                namespace="flir_2",
+                remappings=[('/image_raw', '/flir_2/image_raw')],
                 parameters=[
                     {
                         "output_encoding": "mono16",
@@ -76,13 +80,13 @@ def generate_launch_description():
                     f"bags/{time}",
                     "--topics",
                     "/lidar_points",
-                    "/image_raw",
+                    "/flir_1/image_raw",
                     "/aux/image_color",
                     "/left/cost",
                     "/left/depth",
                     "/left/image_rect",
                     "/right/image_rect",
-                    "/image_raw2",
+                    "/flir_2/image_raw",
                     "/lidar_imu",
                 ],
                 output="screen",
