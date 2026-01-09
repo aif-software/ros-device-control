@@ -40,10 +40,6 @@ namespace v4l2_camera
     // Prepare publisher
     // This should happen before registering on_set_parameters_callback,
     // else transport plugins will fail to declare their parameters
-
-    parameters_.declareStaticParameters();
-    parameters_.declareOutputParameters();
-
     if (options.use_intra_process_comms())
     {
       image_pub_ = create_publisher<sensor_msgs::msg::Image>("image_raw", 10);
@@ -51,16 +47,13 @@ namespace v4l2_camera
     }
     else
     {
-      if (parameters_.getVideoDevice() == "/dev/video4")
-      {
-        camera_transport_pub_ = image_transport::create_camera_publisher(this, "image_raw");
-      }
-      if (parameters_.getVideoDevice() == "/dev/video6")
-      {
-        camera_transport_pub_2 = image_transport::create_camera_publisher(this, "image_raw2");
-      }
+      camera_transport_pub_ = image_transport::create_camera_publisher(this, "image_raw");
     }
 
+    parameters_.declareStaticParameters();
+    parameters_.declareOutputParameters();
+
+    // Prints video device
     std::cout << parameters_.getVideoDevice() << std::endl;
 
     // Prepare camera
@@ -137,18 +130,7 @@ namespace v4l2_camera
             }
             else
             {
-              if (parameters_.getVideoDevice() == "/dev/video4")
-              {
-                camera_transport_pub_.publish(*img, *ci);
-              }
-              else if (parameters_.getVideoDevice() == "/dev/video6")
-              {
-                camera_transport_pub_2.publish(*img, *ci);
-              }
-              else
-              {
-                camera_transport_pub_.publish(*img, *ci);
-              }
+              camera_transport_pub_.publish(*img, *ci);
             }
           }
         }};
