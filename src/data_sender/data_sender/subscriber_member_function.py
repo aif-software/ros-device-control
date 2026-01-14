@@ -14,57 +14,41 @@
 
 import rclpy
 from rclpy.node import Node
-from rclpy_message_converter import json_message_converter as jmc
 
 from sensor_msgs.msg import PointCloud2
 from sensor_msgs.msg import Image
 
-from queue import Queue
-import threading
-
 import paho.mqtt.client as mqtt
+
 import json
-
-topic_info = [
-    {
-        "device": "flir",
-        "topic": "/image_raw",
-        "type": Image,
-    },
-    {
-        "device": "stereocamera",
-        "topic": "/aux/image_mono",
-        "type": Image,
-    },
-    {
-        "device": "lidar",
-        "topic": "/lidar_points",
-        "type": PointCloud2,
-    },
-]
+import base64
 
 
-# TODO: Compress the topic messages.
 class DataSenderNode(Node):
 
     def __init__(self):
         super().__init__("data_sender")
         self.get_logger().info("initializing data sender...")
 
-        # Create queue for storing data before sending
-        self.queue = Queue()
-
         # Create subscriptions for devices
-        for info in topic_info:
-            self.create_subscription(
-                msg_type=info["type"],
-                topic=info["topic"],
-                callback=self.subscription_callback,
-                qos_profile=1,
-            )
-
-        # Create timer for flushing the queue
-        self.create_timer(10, self.flush_queue)
+        self.create_subscription(
+            msg_type=Image,
+            topic="/image_raw",
+            callback=self.image_sender_callback,
+            qos_profile=1,
+        )
+        self.create_subscription(
+            msg_type=Image,
+            topic="/aux/image_mono",
+            callback=self.image_sender_callback,
+            qos_profile=1,
+        )
+        self.create_subscription(
+            msg_type=PointCloud2,
+            topic="/lidar_points",
+            callback=self.pointcloud2_sender_callback,
+            qos_profile=1,
+        )
 
         # Create mqtt client connection
         self.mqtt_client = mqtt.Client()
@@ -73,35 +57,62 @@ class DataSenderNode(Node):
 
         self.get_logger().info("data sender initialized.")
 
-    # Subscriber callback (Everybody uses the same function).
-    def subscription_callback(self, msg):
-        payload = jmc.convert_ros_message_to_json(msg)
-        self.queue.put(payload)
+    # Pointcloud2 callback
+    def pointcloud2_sender_callback(self, msg: PointCloud2):
+        header = {
+            "stamp": {
+                "sec": msg.header.stamp.sec,
+                "nanosec": msg.header.stamp.nanosec,
+            },
+            "frame_id": msg.header.frame_id,
+        }
 
-    def send_data(self, batch):
-        for msg in batch:
-            self.mqtt_client.publish("ros2/sensors", msg)
+        fields = [
+            {
+                "name": f.name,
+                "offset": f.offset,
+                "datatype": f.datatype,
+                "count": f.count,
+            }
+            for f in msg.fields
+        ]
 
-    # WARN: I'm not sure does the whole flush_queue function block the
-    # subscriber threads and if it does the threading needs to be moved one-level up.
-    def flush_queue(self):
-        self.get_logger().info("flushing queue...")
+        metadata = {
+            "header": header,
+            "height": msg.height,
+            "width": msg.width,
+            "fields": fields,
+            "is_bigendian": msg.is_bigendian,
+            "point_step": msg.point_step,
+            "row_step": msg.row_step,
+            "is_dense": msg.is_dense,
+        }
 
-        # List which is to be sent to the receiver
-        batch = []
+        self.mqtt_client.publish("test/pointcloud2/metadata", json.dumps(metadata))
 
-        # This is now restricted because some devices send a lot of data.
-        while not self.queue.empty() and len(batch) <= 1000:
-            batch.append(self.queue.get())
+        self.mqtt_client.publish("test/pointcloud2/data", json.dumps(msg.data))
 
-        # Only start thread on non-empty batches.
-        if batch:
-            # This is done with threading because we don't want the timer
-            # blocking any resources in case the sending takes a lot of time.
-            self.get_logger().info("starting thread")
-            threading.Thread(target=self.send_data, args=(batch,), daemon=True).start()
+    def image_sender_callback(self, msg: Image):
+        header = {
+            "stamp": {
+                "sec": msg.header.stamp.sec,
+                "nanosec": msg.header.stamp.nanosec,
+            },
+            "frame_id": msg.header.frame_id,
+        }
 
-        self.get_logger().info("flushing done.")
+        metadata = {
+            "header": header,
+            "height": msg.height,
+            "width": msg.width,
+            "encoding": msg.encoding,
+            "is_bigendian": msg.is_bigendian,
+            "step": msg.step,
+        }
+
+        self.mqtt_client.publish("test/image/metadata", json.dumps(metadata))
+
+        self.mqtt_client.publish("test/image/data", json.dumps(msg.data))
 
 
 def main(args=None):
