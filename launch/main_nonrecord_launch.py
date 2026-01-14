@@ -64,32 +64,5 @@ def generate_launch_description():
                 package="data_sender",
                 executable="talker",
             ),
-            # Rosbag
-            launch.actions.ExecuteProcess(
-                cmd=[
-                    "ros2",
-                    "bag",
-                    "record",
-                    "--max-bag-duration",
-                    "10",
-                    "--compression-mode",
-                    "file",
-                    "--compression-format",
-                    "zstd",
-                    "--output",
-                    f"bags/{time}",
-                    "--topics",
-                    "/lidar_points",
-                    "/flir_1/image_raw",
-                    "/aux/image_color",
-                    "/left/cost",
-                    "/left/depth",
-                    "/left/image_rect",
-                    "/right/image_rect",
-                    "/flir_2/image_raw",
-                    "/lidar_imu",
-                ],
-                output="screen",
-            ),
         ]
     )
