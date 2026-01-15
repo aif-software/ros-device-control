@@ -22,7 +22,7 @@ def generate_launch_description():
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
                 namespace="flir_1",
-                remappings=[('/image_raw', '/flir_1/image_raw')],
+                remappings=[("/image_raw", "/flir_1/image_raw")],
                 parameters=[
                     {
                         "output_encoding": "mono16",
@@ -37,7 +37,7 @@ def generate_launch_description():
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
                 namespace="flir_2",
-                remappings=[('/image_raw', '/flir_2/image_raw')],
+                remappings=[("/image_raw", "/flir_2/image_raw")],
                 parameters=[
                     {
                         "output_encoding": "mono16",
