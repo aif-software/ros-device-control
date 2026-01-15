@@ -63,7 +63,8 @@ class DataSenderNode(Node):
             for f in msg.fields
         ]
 
-        metadata = {
+        # TODO: optimize
+        payload = {
             "header": header,
             "height": msg.height,
             "width": msg.width,
@@ -72,11 +73,10 @@ class DataSenderNode(Node):
             "point_step": msg.point_step,
             "row_step": msg.row_step,
             "is_dense": msg.is_dense,
+            "data": [int(x) for x in msg.data],
         }
 
-        self.mqtt_client.publish("test/pointcloud2/metadata", json.dumps(metadata))
-
-        self.mqtt_client.publish("test/pointcloud2/data", json.dumps(msg.data))
+        self.mqtt_client.publish("test/lidar", json.dumps(payload))
 
 
 def main(args=None):
