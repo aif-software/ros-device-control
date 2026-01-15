@@ -16,12 +16,10 @@ import rclpy
 from rclpy.node import Node
 
 from sensor_msgs.msg import PointCloud2
-from sensor_msgs.msg import Image
 
 import paho.mqtt.client as mqtt
 
 import json
-import base64
 
 
 class DataSenderNode(Node):
@@ -30,19 +28,7 @@ class DataSenderNode(Node):
         super().__init__("data_sender")
         self.get_logger().info("initializing data sender...")
 
-        # Create subscriptions for devices
-        self.create_subscription(
-            msg_type=Image,
-            topic="/image_raw",
-            callback=self.image_sender_callback,
-            qos_profile=1,
-        )
-        self.create_subscription(
-            msg_type=Image,
-            topic="/aux/image_mono",
-            callback=self.image_sender_callback,
-            qos_profile=1,
-        )
+        # Create Pointcloud2 subscription handler
         self.create_subscription(
             msg_type=PointCloud2,
             topic="/lidar_points",
@@ -91,28 +77,6 @@ class DataSenderNode(Node):
         self.mqtt_client.publish("test/pointcloud2/metadata", json.dumps(metadata))
 
         self.mqtt_client.publish("test/pointcloud2/data", json.dumps(msg.data))
-
-    def image_sender_callback(self, msg: Image):
-        header = {
-            "stamp": {
-                "sec": msg.header.stamp.sec,
-                "nanosec": msg.header.stamp.nanosec,
-            },
-            "frame_id": msg.header.frame_id,
-        }
-
-        metadata = {
-            "header": header,
-            "height": msg.height,
-            "width": msg.width,
-            "encoding": msg.encoding,
-            "is_bigendian": msg.is_bigendian,
-            "step": msg.step,
-        }
-
-        self.mqtt_client.publish("test/image/metadata", json.dumps(metadata))
-
-        self.mqtt_client.publish("test/image/data", json.dumps(msg.data))
 
 
 def main(args=None):
