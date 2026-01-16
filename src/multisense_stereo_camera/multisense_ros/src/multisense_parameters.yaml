@@ -4,7 +4,7 @@ multisense:
       description: "Operating resolution for the MultiSense stored as [width, height, disparity]"
   fps:
       type: int
-      default_value: 10
+      default_value: 30
       description: "The number of image frames per second the camera will send"
       validation:
           bounds<>: [1, 30]
