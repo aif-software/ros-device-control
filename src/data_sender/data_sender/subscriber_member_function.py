@@ -15,6 +15,7 @@
 import rclpy
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
+from rclpy.qos import qos_profile_sensor_data
 from rclpy.node import Node
 
 from sensor_msgs.msg import PointCloud2
@@ -23,6 +24,7 @@ import paho.mqtt.client as mqtt
 
 import json
 import zlib
+import base64
 
 
 class DataSenderNode(Node):
@@ -37,17 +39,22 @@ class DataSenderNode(Node):
         # Create callbackgroup
         self.subscription_callbackgroup = ReentrantCallbackGroup()
 
+        # Setup the qos based on default profile
+        qos = qos_profile_sensor_data
+        qos.depth = 1
+
         # Create Pointcloud2 subscription handler
         self.create_subscription(
             msg_type=PointCloud2,
             topic="/lidar_points",
             callback=self.send_pointcloud2,
-            qos_profile=1,
+            qos_profile=qos,
             callback_group=self.subscription_callbackgroup,
         )
 
         # Create mqtt client
         self.mqtt_client = mqtt.Client()
+
         # Connect to broker
         self.mqtt_client.connect(
             self.get_parameter("mqtt_host").get_parameter_value().string_value
@@ -76,7 +83,13 @@ class DataSenderNode(Node):
                 for f in msg.fields
             ]
 
-            metadata = {
+            # Compress with zlib
+            compressed_data = zlib.compress(msg.data)
+
+            # Encode into base64 and turn into ascii string
+            string_data = base64.b64encode(compressed_data).decode("ascii")
+
+            payload = {
                 "header": header,
                 "height": msg.height,
                 "width": msg.width,
@@ -85,21 +98,13 @@ class DataSenderNode(Node):
                 "point_step": msg.point_step,
                 "row_step": msg.row_step,
                 "is_dense": msg.is_dense,
+                "data": string_data,
             }
 
-            # Compress with zlib
-            compressed_data = zlib.compress(msg.data)
-
             # Send the data to MQTT
-            self.get_logger().info("Publishing data to MQTT...")
             self.mqtt_client.publish(
-                "pointcloud2/metadata",
-                json.dumps(metadata),
-                qos=0,
-            )
-            self.mqtt_client.publish(
-                "pointcloud2/data",
-                compressed_data,
+                "ros2/lidar",
+                json.dumps(payload),
                 qos=0,
             )
         except Exception as e:
