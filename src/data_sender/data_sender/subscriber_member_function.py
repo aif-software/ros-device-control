@@ -13,8 +13,6 @@
 # limitations under the License.
 
 import rclpy
-from rclpy.callback_groups import ReentrantCallbackGroup
-from rclpy.executors import MultiThreadedExecutor
 from rclpy.qos import qos_profile_sensor_data
 from rclpy.node import Node
 
@@ -36,22 +34,6 @@ class DataSenderNode(Node):
         # Declare parameters
         self.declare_parameter("mqtt_host", "localhost")
 
-        # Create callbackgroup
-        self.subscription_callbackgroup = ReentrantCallbackGroup()
-
-        # Setup the qos based on default profile
-        qos = qos_profile_sensor_data
-        qos.depth = 1
-
-        # Create Pointcloud2 subscription handler
-        self.create_subscription(
-            msg_type=PointCloud2,
-            topic="/lidar_points",
-            callback=self.send_pointcloud2,
-            qos_profile=qos,
-            callback_group=self.subscription_callbackgroup,
-        )
-
         # Create mqtt client
         self.mqtt_client = mqtt.Client()
 
@@ -62,50 +44,66 @@ class DataSenderNode(Node):
         # Start network loop
         self.mqtt_client.loop_start()
 
+        # Values for the publisher
+        self.mqtt_client.max_inflight_messages_set(1)
+        self.mqtt_client.max_queued_messages_set(1)
+
+        # Setup the qos based on default profile
+        qos = qos_profile_sensor_data
+        qos.depth = 1
+
+        # Create Pointcloud2 subscription handler
+        self.create_subscription(
+            msg_type=PointCloud2,
+            topic="/lidar_points",
+            callback=self.collect_pointcloud2,
+            qos_profile=qos,
+        )
+
         self.get_logger().info("DataSenderNode initialized.")
 
-    def send_pointcloud2(self, msg: PointCloud2):
+    def collect_pointcloud2(self, msg: PointCloud2):
+        header = {
+            "stamp": {
+                "sec": msg.header.stamp.sec,
+                "nanosec": msg.header.stamp.nanosec,
+            },
+        }
+
+        fields = [
+            {
+                "name": f.name,
+                "offset": f.offset,
+                "datatype": f.datatype,
+                "count": f.count,
+            }
+            for f in msg.fields
+        ]
+
+        # Compress with zlib
+        compressed_data = zlib.compress(msg.data)
+
+        # Encode into base64 and turn into ascii string
+        string_data = base64.b64encode(compressed_data).decode("ascii")
+
+        payload = {
+            "header": header,
+            "height": msg.height,
+            "width": msg.width,
+            "fields": fields,
+            "is_bigendian": msg.is_bigendian,
+            "point_step": msg.point_step,
+            "row_step": msg.row_step,
+            "is_dense": msg.is_dense,
+            "data": string_data,
+        }
+
         try:
-            header = {
-                "stamp": {
-                    "sec": msg.header.stamp.sec,
-                    "nanosec": msg.header.stamp.nanosec,
-                },
-            }
-
-            fields = [
-                {
-                    "name": f.name,
-                    "offset": f.offset,
-                    "datatype": f.datatype,
-                    "count": f.count,
-                }
-                for f in msg.fields
-            ]
-
-            # Compress with zlib
-            compressed_data = zlib.compress(msg.data)
-
-            # Encode into base64 and turn into ascii string
-            string_data = base64.b64encode(compressed_data).decode("ascii")
-
-            payload = {
-                "header": header,
-                "height": msg.height,
-                "width": msg.width,
-                "fields": fields,
-                "is_bigendian": msg.is_bigendian,
-                "point_step": msg.point_step,
-                "row_step": msg.row_step,
-                "is_dense": msg.is_dense,
-                "data": string_data,
-            }
-
             # Send the data to MQTT
             self.mqtt_client.publish(
                 "ros2/lidar",
                 json.dumps(payload),
-                qos=0,
+                qos=1,
             )
         except Exception as e:
             self.get_logger().info(f"MQTT publish failed: {e}")
@@ -115,12 +113,10 @@ def main(args=None):
     rclpy.init(args=args)
 
     node = DataSenderNode()
-    executor = MultiThreadedExecutor()
-    executor.add_node(node)
 
     try:
         node.get_logger().info("Starting DataSenderNode...")
-        executor.spin()
+        rclpy.spin(node)
     except KeyboardInterrupt:
         return
 
