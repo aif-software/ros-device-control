@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import rclpy
-from rclpy.qos import qos_profile_sensor_data
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy, DurabilityPolicy
 from rclpy.node import Node
 
 from sensor_msgs.msg import PointCloud2
@@ -44,25 +44,31 @@ class DataSenderNode(Node):
         # Start network loop
         self.mqtt_client.loop_start()
 
-        # Values for the publisher
+        # Maximum number of messages that can be partway through the network (QoS > 0).
         self.mqtt_client.max_inflight_messages_set(1)
+
+        # Maximum number of outgoing messages in queue.
         self.mqtt_client.max_queued_messages_set(1)
 
-        # Setup the qos based on default profile
-        qos = qos_profile_sensor_data
-        qos.depth = 1
+        # Setup the qos profile
+        qos = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.VOLATILE,
+            history=HistoryPolicy.KEEP_LAST,
+            depth=1,
+        )
 
         # Create Pointcloud2 subscription handler
         self.create_subscription(
             msg_type=PointCloud2,
             topic="/lidar_points",
-            callback=self.collect_pointcloud2,
+            callback=self.send_data,
             qos_profile=qos,
         )
 
         self.get_logger().info("DataSenderNode initialized.")
 
-    def collect_pointcloud2(self, msg: PointCloud2):
+    def send_data(self, msg: PointCloud2):
         header = {
             "stamp": {
                 "sec": msg.header.stamp.sec,
@@ -100,11 +106,11 @@ class DataSenderNode(Node):
 
         try:
             # Send the data to MQTT
-            self.mqtt_client.publish(
-                "ros2/lidar",
-                json.dumps(payload),
-                qos=1,
-            )
+            info = self.mqtt_client.publish("ros2/lidar", json.dumps(payload), qos=1)
+            if info.rc == 0:
+                self.get_logger().info(
+                    f"New message queued mid: {info.mid}, header: {header}"
+                )
         except Exception as e:
             self.get_logger().info(f"MQTT publish failed: {e}")
 
