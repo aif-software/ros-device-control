@@ -55,3 +55,6 @@ CATKIN_IGNORE
 
 # VsCode
 .vscode
+
+# Environment
+*.env
