@@ -1,16 +1,4 @@
 services:
-  ros-system:
-    env_file: .env
-    build:
-      context: ./
-      dockerfile: Dockerfile
-    devices:
-      - "${FLIR_1_PATH}:/dev/video0"
-      - "${FLIR_2_PATH}:/dev/video2"
-    network_mode: "host"
-    volumes:
-      - "${HOST_BAG_PATH}:/app/bags"
-
   kuksa-databroker:
     image: ghcr.io/eclipse-kuksa/kuksa-databroker:latest
     networks:
