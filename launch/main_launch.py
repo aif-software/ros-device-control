@@ -63,6 +63,7 @@ def generate_launch_description():
                 name="data_sender",
                 package="data_sender",
                 executable="talker",
+                parameters=[{"mqtt_host": "86.50.228.229"}],
             ),
             # Rosbag
             launch.actions.ExecuteProcess(
