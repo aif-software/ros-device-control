@@ -1,0 +1,28 @@
+services:
+  kuksa-databroker:
+    image: ghcr.io/eclipse-kuksa/kuksa-databroker:latest
+    container_name: databroker
+    networks:
+      - kuksa
+    ports:
+      - 55555:55555
+    volumes:
+      - ./vss:/vss
+    command: "--insecure --vss /vss/vss.json"
+
+  kuksa-provider:
+    image: ghcr.io/eclipse-kuksa/kuksa-can-provider/can-provider:latest
+    container_name: can-provider
+    environment:
+      - KUKSA_ADDRESS=kuksa-databroker
+    networks:
+      - kuksa
+    volumes:
+      - ./config:/config
+    command: "--dbcfile /config/toyota_rav4_hybrid_2017.dbc --dumpfile /config/candump.log --mapping /config/dbc2vss.json"
+
+# This is only for the kuksa provider and databroker
+networks:
+  kuksa:
+    name: kuksa-docker
+    external: true
