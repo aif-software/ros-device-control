@@ -8,7 +8,7 @@ services:
       - 55555:55555
     volumes:
       - ./setup/vss:/vss
-    command: "--insecure --vss /vss/vss.json"
+    command: "--insecure --vss /vss/vss.json --enable-viss"
 
   kuksa-provider:
     image: ghcr.io/eclipse-kuksa/kuksa-can-provider/can-provider:latest
