@@ -1,0 +1,18 @@
+OttoKalliokoski
+opened on Jan 8
+Member
+
+Can we get the timestamp from the GPS and use that to synchronize the timeserver of the Jetson? - Otto
+
+Include log files and send them to cloud as well.
+
+Webbikamera autoon josta tulee video + audio, video hoituu v4l2-kirjastolla, ääneen pitää tutustua.
+
+Yksityiskohtia datan lähettämiseen liittyen, tarvitseeko apua tms, missä vaiheessa lähetys?
+
+Myöhemmin halutaan, että data poistetaan kun se on lähetetty, nyt säilytetään. Tilan seuraamis skripti tms tarvitaan joskus.
+
+Laitan tähän myös seuraavan palsun juttua:
+
+Kallen nauhoituksen ei tarvi olla "reaaliaikaista", lähinnä ihmisen reaaliaikaista.
+

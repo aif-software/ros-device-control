@@ -1,0 +1,77 @@
+akanerva
+opened on Oct 17, 2025
+Member
+Laitteiden monitorointi
+
+    Logger terminaalissa kertomassa laitteiden statuksen
+    Softan kautta observointi (rviz jne) - onko tarvetta?
+    Kiintolevyjen status?
+
+Datan formaatti
+
+    Tietokanta jonne data lopulta kantautuu? Varmaan määrittää datan formaatin
+    JSON/csv/???
+
+Lokaali tallennus
+
+    Kiintolevyjä jne?
+    Datan siirto auton raudasta muualle
+
+    automatisoitu, manuaalin scriptin runnaus?
+
+Nettijutu
+
+    Suoratoisto livekuva? 💀
+    Tuleeko autoon mokkula? riittävä terojen siirtämiseen?
+
+Multisensen konffaus
+
+    paljon mahdollisia parametreja. mikä relevanttia?
+
+Activity
+OttoKalliokoski
+OttoKalliokoski commented on Oct 22, 2025
+OttoKalliokoski
+on Oct 22, 2025
+Member
+
+Rviz mielellään.
+
+Striimaus voi olla mahdotonta, osittainen striimaus ehkä (esim. vain lidar)
+
+Contact niklas stafford abuut jetson
+
+Tietokanta = Allas
+
+Datan lopullinen formaatti ei oo varma vielä, seuraavan palaverin ongelmia ens keskiviikkona
+
+Lidarilta ulos vaan pcappina nyt, Flir ja stereo camera katsoa jos sais kompressoitua minimi lossilla
+
+Data mieluiten paketoidaan jetsonilla jotenkin, lähetetään cPoutaan jossa se käpisteltäis lopulliseen formaattiin yms.
+
+    Katso kyykkääkö jetson jos kaikki laitteet tallentaa kerralla
+    Jos ei, katsotaan througput
+    Luvut Ellalle keskiviikkona, tarvitaanko nas ja millainen mokkula tarvitaan
+
+Timestamppien viiveenä millisekunttien heitto ei haittaa, sekunnit on ongelma, ois hyvä vaan tietää suunnilleen millainen viive.
+
+Datan säilytys pitää miettiä, sekä pitkäaikainen että locaali, ei meidän murhe suoraan.
+OttoKalliokoski
+OttoKalliokoski commented on Oct 24, 2025
+OttoKalliokoski
+on Oct 24, 2025
+Member
+
+Relevantit topicit stereo camerasta:
+
+/left/image_mono
+/left/image_rect
+/left/depth
+/left/cost
+
+/aux/image_color
+/aux/image_rect_color
+
+/right/image_mono
+/right/image_rect
+
