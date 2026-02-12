@@ -7,11 +7,15 @@ ENV ROS_DOMAIN_ID=69
 # setup working directory
 WORKDIR /app
 
-# copy source code
-COPY src src
+# copy lidar driver code
+COPY src/HesaiLidar_ROS_2.0 src/HesaiLidar_ROS_2.0
+
+# copy flir driver code
+COPY src/v4l2_camera src/v4l2_camera
+
 
 # copy launch script
-COPY launch/main_launch.py launch.py
+COPY launch/lidar_flir_launch.py launch.py
 
 # install system dependencies
 RUN apt-get update && apt-get install -y \
