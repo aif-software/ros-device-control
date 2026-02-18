@@ -32,8 +32,7 @@ RUN . /opt/ros/jazzy/setup.sh && \
     rosdep init &&  \
     rosdep update && \
     rosdep install --from-paths src -y --ignore-src && \
-    colcon build --symlink-install && \
-    colcon build --symlink-install # some duct tape here don't mind me
+    colcon build --symlink-install
 
 # launch ros package
 CMD ["bash", "-c", "source install/setup.bash && ros2 launch launch.py"]
