@@ -42,9 +42,7 @@ set(POINT_TYPE XYZI)
 #=======================================
 # Compile setup (ORIGINAL, CATKIN, COLCON)
 #=======================================
-message(=============================================================)
-message("-- ROS_VERSION is $ENV{ROS_VERSION}")
-message(=============================================================)
+message(STATUS "-- ROS_VERSION is $ENV{ROS_VERSION}")
 
 
 #========================
@@ -121,9 +119,7 @@ if($ENV{ROS_VERSION} MATCHES "2")
   find_package(rclcpp QUIET)
   if(rclcpp_FOUND)
 
-    message(=============================================================)
-    message("-- ROS2 Found. ROS2 Support is turned On.")
-    message(=============================================================)
+    message(STATUS "-- ROS2 Found. ROS2 Support is turned On.")
 
     add_definitions(-DROS2_FOUND)
     include_directories(${rclcpp_INCLUDE_DIRS})
