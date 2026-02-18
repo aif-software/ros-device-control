@@ -2,7 +2,7 @@ services:
   ros-system:
     env_file: .env
     build:
-      context: ../
+      context: .
       dockerfile: Dockerfile
     devices:
       - "${FLIR_1_PATH}:/dev/video0"

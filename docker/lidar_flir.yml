@@ -3,6 +3,7 @@ version: "3.9"
 services:
   ros-lidar-flir:
     build:
+      context: .
       dockerfile: Dockerfile.lidar_flir
     image: ros-lidar-flir:latest
     container_name: ros-lidar-flir
