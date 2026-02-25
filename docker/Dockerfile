@@ -1,4 +1,6 @@
-    # this can be optimized
+# runs all nodes found in src, without starting recording
+
+# this can be optimized
 FROM ros:jazzy-ros-core
 
 # set runtime environment variables

@@ -9,8 +9,8 @@ def generate_launch_description():
             Node(
                 name="flir_driver",
                 package="v4l2_camera",
-                namespace="flir_1",
-                remappings=[("/image_raw", "/flir_1/image_raw")],
+                namespace="flir_left",
+                remappings=[("/image_raw", "/flir_left/image_raw")],
                 executable="v4l2_camera_node",
                 parameters=[
                     {
@@ -24,8 +24,8 @@ def generate_launch_description():
             Node(
                 name="flir_driver2",
                 package="v4l2_camera",
-                namespace="flir_2",
-                remappings=[("/image_raw", "/flir_2/image_raw")],
+                namespace="flir_right",
+                remappings=[("/image_raw", "/flir_right/image_raw")],
                 executable="v4l2_camera_node",
                 parameters=[
                     {

@@ -16,11 +16,13 @@ def generate_launch_description():
                 name="flir_driver",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
+                namespace="flir_left",
+                remappings=[('/image_raw', '/flir_left/image_raw')],
                 parameters=[
                     {
                         "output_encoding": "mono16",
                         "pixel_format": "Y16 ",
-                        "video_device": "/dev/video1",
+                        "video_device": "/dev/video0",
                     }
                 ],
             ),
@@ -29,11 +31,13 @@ def generate_launch_description():
                 name="flir_driver2",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
+                namespace="flir_right",
+                remappings=[('/image_raw', '/flir_right/image_raw')],
                 parameters=[
                     {
                         "output_encoding": "mono16",
                         "pixel_format": "Y16 ",
-                        "video_device": "/dev/video3",
+                        "video_device": "/dev/video2",
                     }
                 ],
             ),
