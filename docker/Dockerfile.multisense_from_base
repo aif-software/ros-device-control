@@ -1,0 +1,8 @@
+# this can be optimized
+FROM ros-base-with-rosdep
+
+# setup working directory
+WORKDIR /app
+
+# launch ros package
+CMD ["bash", "-c", "source install/setup.bash && ros2 launch launch/multisense_launch.py"]
