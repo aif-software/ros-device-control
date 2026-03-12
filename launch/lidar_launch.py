@@ -16,17 +16,5 @@ def generate_launch_description():
                 package="hesai_ros_driver",
                 executable="hesai_ros_driver_node",
             ),
-            # Stereocamera
-            Node(
-                name="stereocamera_driver",
-                package="multisense_ros",
-                executable="ros_driver",
-            ),
-            # Data sender
-           # Node(
-           #     name="data_sender",
-           #     package="data_sender",
-           #     executable="talker",
-           # ),
         ]
     )

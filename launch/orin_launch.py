@@ -10,12 +10,6 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            # Lidar
-            Node(
-                name="lidar_driver",
-                package="hesai_ros_driver",
-                executable="hesai_ros_driver_node",
-            ),
             # Flir 1
             Node(
                 name="flir_driver",
@@ -57,12 +51,6 @@ def generate_launch_description():
                 name="foxglove_bridge",
                 package="foxglove_bridge",
                 executable="foxglove_bridge",
-            ),
-            # Data sender
-            Node(
-                name="data_sender",
-                package="data_sender",
-                executable="talker",
             ),
         ]
     )

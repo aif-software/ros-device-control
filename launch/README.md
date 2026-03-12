@@ -3,27 +3,17 @@
 The root folder of this document holds all the launch files that
 can be used while developing or in production.
 
-## Full system
+Launch files don't start automatically recording a rosbag unless
+the file name contains "record".
 
-file: full_system_launch.py.
+The intended way to start recording is to run the ros command in a container.
+## Device specific launch files
 
-description: Will startup the whole system including all the different
-sensor/device drivers and our own custom nodes which handle
-the data coming from these devices etc...
+orin_launch.py and nano_launch.py might be copies of other launch files,
+but exist just to make it easier to parse which launch files are intended
+for the current setup.
 
-purpose: Will be ran on the jetson in containarized environment and does
-basically everything needed for the project.
-
-## Device drivers
-
-file: driver_launch.py
-
-description: Will only start all the device/sensor drivers which include
-Lidar, Flir(s) and the stereo camera.
-
-purpose: Used for debugging and development for example if someone wants
-to add more nodes to the system or test out some functionality you don't
-have to run all the nodes.
+As of 12.3.26, orin_launch.py and nano_launch.py are up to date.
 
 ## Misc
 
