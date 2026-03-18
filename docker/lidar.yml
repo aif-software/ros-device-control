@@ -1,0 +1,11 @@
+version: "3.9"
+
+services:
+  ros-lidar:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.lidar
+    image: ros-lidar:latest
+    container_name: ros-lidar
+    network_mode: host
+    restart: unless-stopped

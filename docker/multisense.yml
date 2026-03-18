@@ -4,7 +4,7 @@ services:
   ros-multisense:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.multisense
+      dockerfile: docker/Dockerfile.multisense_from_base
     image: ros-multisense:latest
     container_name: ros-multisense
     network_mode: host

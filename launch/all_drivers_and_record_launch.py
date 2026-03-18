@@ -59,12 +59,12 @@ def generate_launch_description():
                 executable="foxglove_bridge",
             ),
             # Data sender
-            Node(
-                name="data_sender",
-                package="data_sender",
-                executable="talker",
-                parameters=[{"mqtt_host": "86.50.228.229"}],
-            ),
+            #Node(
+            #    name="data_sender",
+            #    package="data_sender",
+            #    executable="talker",
+            #    parameters=[{"mqtt_host": "86.50.228.229"}],
+            #),
             # Rosbag
             launch.actions.ExecuteProcess(
                 cmd=[
