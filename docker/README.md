@@ -35,8 +35,8 @@ docker compose up
 or from the root folder of the repository:
 
 ```
-docker compose -f docker/pi/lidar.yml build
-docker compose -f docker/pi/lidar.yml up
+docker compose -f docker/pi/docker-compose.yml build
+docker compose -f docker/pi/docker-compose.yml up
 ```
 
 Containers for nano and pi are more lean, and contain only drivers for the sensors they're supposed to run. The orin container has foxglove bridge and rosbag recording capabilities as well.
