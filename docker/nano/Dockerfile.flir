@@ -29,7 +29,7 @@ RUN . /opt/ros/jazzy/setup.sh && \
 
 # copy launch file last so building new dockerfiles with
 # only launch file changes is faster
-COPY launch/nano_all_drivers_launch.py launch.py
+COPY launch/flir_launch.py launch.py
 
 # launch ros package
 CMD ["bash", "-c", "source install/setup.bash && ros2 launch launch.py"]
