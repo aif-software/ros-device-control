@@ -1,0 +1,7 @@
+    # this can be optimized
+FROM ros-base-with-rosdep
+
+WORKDIR /app
+
+# launch ros package
+CMD ["bash", "-c", "source install/setup.bash && ros2 launch launch/flir_launch.py"]

@@ -1,17 +1,22 @@
+import launch
+import datetime as dt
+
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
+    time = str(dt.datetime.now()).replace(" ", "_").replace(":", "-")
+
     return LaunchDescription(
         [
             # Flir 1
             Node(
                 name="flir_driver",
                 package="v4l2_camera",
-                namespace="flir_left",
-                remappings=[("/image_raw", "/flir_left/image_raw")],
                 executable="v4l2_camera_node",
+                namespace="flir_left",
+                remappings=[('/image_raw', '/flir_left/image_raw')],
                 parameters=[
                     {
                         "output_encoding": "mono16",
@@ -24,9 +29,9 @@ def generate_launch_description():
             Node(
                 name="flir_driver2",
                 package="v4l2_camera",
-                namespace="flir_right",
-                remappings=[("/image_raw", "/flir_right/image_raw")],
                 executable="v4l2_camera_node",
+                namespace="flir_right",
+                remappings=[('/image_raw', '/flir_right/image_raw')],
                 parameters=[
                     {
                         "output_encoding": "mono16",
@@ -37,3 +42,4 @@ def generate_launch_description():
             ),
         ]
     )
+
