@@ -1,4 +1,5 @@
-# this can be optimized
+# this file has multisense drivers, and other necessary packages
+# for recording (rosbag) and inspecting (foxglove)
 FROM ros:jazzy-ros-core
 
 # setup working directory
@@ -7,28 +8,27 @@ WORKDIR /app
 # copy multisense driver code
 COPY src/multisense_stereo_camera src/multisense_stereo_camera
 
-# copy launch script
-COPY launch/multisense_launch.py launch.py
-COPY cyclonedds.xml cyclonedds.xml
-
-# install ros invoked dependencies and build
-# docker RUN commands will initialize new shell so source need to be run.
+# install dependencies from apt
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     python3-colcon-common-extensions \
-    ros-jazzy-rmw-cyclonedds-cpp \
-    python3-rosdep && \
-    . /opt/ros/jazzy/setup.sh && \
+    python3-rosdep \
+    ros-jazzy-foxglove-bridge \
+    ros-jazzy-rosbag2 
+
+# make ros build
+RUN . /opt/ros/jazzy/setup.sh && \
     rosdep init &&  \
     rosdep update && \
     rosdep install --from-paths src -y --ignore-src && \
     colcon build --symlink-install
 
-# set dds and ros domain
-ENV ROS_DOMAIN_ID=69 \
-    CYCLONEDDS_URI=file:///app/cyclonedds.xml \
-    RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+# set ros domain
+ENV ROS_DOMAIN_ID=69
+
+# copy launch script last
+COPY launch/multisense_launch.py launch.py
 
 # launch ros package
 CMD ["bash", "-c", "source install/setup.bash && ros2 launch launch.py"]

@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  ros-flir:
+    build:
+      context: ../..
+      dockerfile: docker/nano/Dockerfile.flir
+    image: ros-flir:latest
+    container_name: ros-flir
+    network_mode: host
+    devices:
+      - /dev/video0:/dev/video0
+      - /dev/video2:/dev/video2
+    restart: unless-stopped
