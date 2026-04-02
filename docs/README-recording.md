@@ -6,6 +6,21 @@ This is a simple guide to recording with the ros2 devices on the car. This is st
 
 Currently we use ssh to connect to the devices remotely to control them. The devices can be used directly with a monitor and keyboard/mouse except for the Raspberry Pi, due to it having only micro hdmi port for video out.
 
+Attaching the sensors should be done carefully and ensured that the screws holding them down are tight. After attaching the sensors, you should drive for a while, and check again that the screws have not shaken loose. This should be done every once in a while, at least every time the car is parked. The sensors on the roof are expensive and heavy, and if they come loose, they may fall on the car driving behind you and cause a serious accident.
+
+The FLIR cameras should be attached to the two L-shaped brackets, with the camera labeled "Flir Left" going on the left bracket, and the "Flir Right" camera going on the right bracket. You should also ensure that the cameras point forward, and will not come loose/shake during the recording.
+
+The Multisense/Lidar setup should be carefully lifted on top of the roof rack, with the Multisense lenses pointing forward.
+Place the setup on top of the driver side custom bracket, and its screws lined up by a few rotations. After the screws are loosely attached, line the passenger side bracket with the screws on the camera setup. Attach the screws on that side loosely, making sure not to crossthread the screws. After all screws are attached, tighten them securely, preferably with a ratchet wrench to ensure enough force is used.
+After the screws are tightened securely, you should be able to grab the setup and move it around, with the setup not shaking/rattling. You should be able to sway the car while holding from the setup.
+
+Attach the cables on the Multisense camera. Plug the green cable on the matching port on the back right side of the camera, making sure to match the notch inside the connector to the port, as it can be plugged in only one way. After plugging it in, screw the nut around the cable tightly. If the screw stops turning with reasonable force, try to push the cable in deeper, and if it moves in, tighten the screw again.
+Next, plug the power cable of the Multisense camera to the grey port, mathcing the notches on the cable to the port. The clips on the side of the cable should snap/click into place once the cable is properly attached. If the clips do not click correctly, the cable is not properly attached, and may come loose.
+
+Route the cables on top of the roof to the cable passthrough. DETAILED EXPLANATION SHOULD BE WRITTEN HERE ONCE ENSURED THE DETAILS!!
+
+Once the cables have been routed into the car, plug them in following the guide:
+
 ### Orin
 
 The Orin should always be connected to the SFP-port of the modem, as it will be receiving the most network traffic. In addition, plug the USB-C power cable to the Orin, the USB-C port does not matter which one is used.
@@ -48,7 +63,7 @@ Start the recording inside the container.
 ```bash
 source install/setup.bash
 
-ros2 bag record --max-bag-duration 10 --max-cache-size 20000000000 --compression-mode file --compression-format zstd --output bags/FILE_NAME --topics /lidar_points /flir_left/image_raw /flir_right/image_raw /aux/image_color /left/cost /left/depth /left/image_rect /right/image_rect /lidar_imu
+ros2 bag record --max-bag-duration 10 --max-cache-size 20000000000 --compression-mode file --compression-format zstd --output bags/FILE_NAME --topics /lidar_points /flir_left/image_raw /flir_right/image_raw /aux/image_color /left/cost /left/depth /left/image_rect /right/image_rect /imu
 ```
 
 This will start the recording, saving the files inside the bags/ directory. This can be stopped by pressing CTRL + C inside the container. The recording should _ALWAYS_ be stopped in this way, as if it is not stopped gracefully (for example, stopping the container without stopping the recording first) will lead into the recording being corrupted.
