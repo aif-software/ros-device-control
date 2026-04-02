@@ -44,6 +44,18 @@ m3s@192.168.88.250 Orin
 m3s@192.168.88.248 Nano
 m3spi@192.168.88.247 Pi
 
+For Nano and Raspberry Pi, the ros-device-control/ directory should be at the desktop, you can open up the directory by typing:
+
+```bash
+cd ros-device-control/
+```
+
+For Orin, type:
+
+```bash
+cd /mnt/Burak2/ros-device-control
+```
+
 Inside each device, run their respective docker compose files inside the docker directory.
 
 ```bash
@@ -52,7 +64,7 @@ docker compose up
 
 ## Starting the recording
 
-When each of the containers are up, detach from the one running on Orin, and go inside the container.
+When each of the containers are up, detach from the one running on Orin by pressing D, and go inside the container.
 
 ```bash
 docker exec -it ros-multisense bash
