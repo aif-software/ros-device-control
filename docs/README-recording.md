@@ -27,7 +27,7 @@ The Orin should always be connected to the SFP-port of the modem, as it will be 
 
 ### Nano
 
-Plug the network and power cable to the Nano. In addition, attach the two FLIR cameras to it, with one camera being attached via the USB-A port, and one attached to the USB-C dock, with the dock then being plugged into the USB-C port of the Nano.
+Plug the network a nd power cable to the Nano. In addition, attach the two FLIR cameras to it, with one camera being attached via the USB-A port, and one attached to the USB-C dock, with the dock then being plugged into the USB-C port of the Nano.
 
 ### Raspberry Pi
 
@@ -54,12 +54,20 @@ For Orin, type:
 
 ```bash
 cd /mnt/Burak2/ros-device-control
+
+docker compose -f docker/orin/docker-compose.yml up
 ```
 
 Inside each device, run their respective docker compose files inside the docker directory.
 
 ```bash
-docker compose up
+cd ros-device-control/
+
+# For Nano
+docker compose -f docker/nano/docker-compose.yml up
+
+# For Raspberry Pi
+docker compose -f docker/pi/docker-compose.yml up
 ```
 
 ## Starting the recording
