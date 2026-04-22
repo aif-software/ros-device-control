@@ -12,7 +12,6 @@ def generate_launch_description():
         [
             # Stereocamera
             Node(
-                name="stereocamera_driver",
                 package="multisense_ros",
                 executable="ros_driver",
             ),
