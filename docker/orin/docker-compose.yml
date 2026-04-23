@@ -5,9 +5,16 @@ services:
     build:
       context: ../..
       dockerfile: docker/orin/Dockerfile.multisense
-    image: ros-multisense:latest
     container_name: ros-multisense
     network_mode: host
+    restart: unless-stopped
+
+  ros-recording:
+    build:
+      context: ../..
+      dockerfile: docker/orin/Dockerfile.recorder
+    container_name: ros-recorder
+    network_mode: host
     volumes:
-      - /mnt/Burak2/ros-device-control/bags:/app/bags
+      - /mnt/Burak2/bags:/app/bags
     restart: unless-stopped
