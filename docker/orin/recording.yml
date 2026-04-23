@@ -1,0 +1,10 @@
+services:
+  ros-recording:
+    build:
+      context: ../..
+      dockerfile: docker/orin/Dockerfile.recorder
+    container_name: ros-recorder
+    network_mode: host
+    volumes:
+      - /mnt/Burak2/bags:/app/bags
+    restart: unless-stopped
