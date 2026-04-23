@@ -72,18 +72,10 @@ docker compose -f docker/pi/docker-compose.yml up
 
 ## Starting the recording
 
-When each of the containers are up, detach from the one running on Orin by pressing D, and go inside the container.
+Inside Orin in the ros-device-control folder run:
 
 ```bash
-docker exec -it ros-multisense bash
+docker compose -f docker/orin/recording.yml up
 ```
 
-Start the recording inside the container.
-
-```bash
-source install/setup.bash
-
-ros2 bag record --max-bag-duration 10 --max-cache-size 20000000000 --compression-mode file --compression-format zstd --output bags/FILE_NAME --topics /lidar_points /flir_left/image_raw /flir_right/image_raw /aux/image_color /left/cost /left/depth /left/image_rect /right/image_rect /imu
-```
-
-This will start the recording, saving the files inside the bags/ directory. This can be stopped by pressing CTRL + C inside the container. The recording should _ALWAYS_ be stopped in this way, as if it is not stopped gracefully (for example, stopping the container without stopping the recording first) will lead into the recording being corrupted.
+This will start the recording and can be stopped using CTRL-C. The container can also be run on background appending the command with "-d" option.
