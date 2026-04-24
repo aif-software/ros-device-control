@@ -8,3 +8,4 @@ services:
     volumes:
       - /mnt/Burak2/ros-device-control/bags:/app/bags
     restart: unless-stopped
+    stop_grace_period: 24h
