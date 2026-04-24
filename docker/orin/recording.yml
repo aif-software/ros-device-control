@@ -6,5 +6,5 @@ services:
     container_name: ros-recorder
     network_mode: host
     volumes:
-      - /mnt/Burak2/bags:/app/bags
+      - /mnt/Burak2/ros-device-control/bags:/app/bags
     restart: unless-stopped

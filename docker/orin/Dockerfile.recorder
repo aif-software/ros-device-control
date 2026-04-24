@@ -25,4 +25,4 @@ RUN chmod +x entrypoint.sh
 STOPSIGNAL SIGINT
 
 ENTRYPOINT ["./entrypoint.sh"]
-CMD ["ros2", "launch", "launch.py"]
+CMD ["ros2", "launch", "launch.py", "sigterm_timeout:=1e9"]
