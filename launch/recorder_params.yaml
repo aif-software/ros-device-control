@@ -1,19 +1,11 @@
 recorder:
   ros__parameters:
     record:
-      topics: ["/lidar_points", "/flir_left/image_raw", "/flir_right/image_raw", "/aux/image_color", "/left/cost", "/left/depth", "/left/image_rect", "/right/image_rect", "/imu"]
+      topics: ["/lidar_points", "/flir_left/image_raw", "/flir_right/image_raw", "/aux/image_color", "/left/cost", "/left/depth", "/left/image_rect", "/right/image_rect", "/imu/imu_data"]
       compression_mode: file
       compression_format: zstd
     storage:
       storage_id: mcap
-      max_bagfile_duration: 10
+      max_bagfile_size: 3000000000 
       max_cache_size: 20000000000
-
-
-# ros2 bag record 
-      # --max-bag-duration 10 
-      # --max-cache-size 20000000000 
-      # --compression-mode file 
-      # --compression-format zstd 
-      # --output bags/FILE_NAME 
-      # --topics /lidar_points /flir_left/image_raw /flir_right/image_raw /aux/image_color /left/cost /left/depth /left/image_rect /right/image_rect /imu
+      qos_profile_overrides_path: "override.yaml"

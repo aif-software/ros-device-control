@@ -5,4 +5,5 @@ services:
       dockerfile: docker/orin/Dockerfile.multisense
     container_name: ros-multisense
     network_mode: host
+    ipc: host
     restart: unless-stopped

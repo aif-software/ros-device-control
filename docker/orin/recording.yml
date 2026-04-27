@@ -5,6 +5,7 @@ services:
       dockerfile: docker/orin/Dockerfile.recorder
     container_name: ros-recorder
     network_mode: host
+    ipc: host
     volumes:
       - /mnt/Burak2/ros-device-control/bags:/app/bags
     restart: unless-stopped
