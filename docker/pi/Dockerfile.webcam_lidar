@@ -1,0 +1,37 @@
+# this can be optimized
+FROM ros:jazzy-ros-core
+
+# setup working directory
+WORKDIR /app
+
+# copy driver code
+COPY src/HesaiLidar_ROS_2.0 src/HesaiLidar_ROS_2.0
+COPY src/v4l2_camera src/v4l2_camera
+
+# install system dependencies
+RUN apt-get update && apt-get install -y \
+    libboost-all-dev \
+    libyaml-cpp-dev \
+    build-essential \
+    cmake \
+    python3-colcon-common-extensions \
+    python3-rosdep
+
+# setup environment variable to enable ROS discovery data between computers
+ENV ROS_DOMAIN_ID=69
+
+# install ros invoked dependencies and build
+# docker RUN commands will initialize new shell so source need to be run.
+RUN . /opt/ros/jazzy/setup.sh && \
+    rosdep init &&  \
+    rosdep update && \
+    rosdep install --from-paths src -y --ignore-src && \
+    colcon build --symlink-install
+
+# copy launch file last so it's faster to build new images
+# with only launch file changes
+COPY launch/webcam_lidar_launch.py launch.py
+
+# launch ros package
+CMD ["bash", "-c", "source install/setup.bash && ros2 launch launch.py"]
+

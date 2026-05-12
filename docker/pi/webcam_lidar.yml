@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  ros-lidar:
+    build:
+      context: ../..
+      dockerfile: docker/pi/Dockerfile.webcam_lidar
+    image: ros-webcam-lidar:latest
+    container_name: ros-webcam-lidar
+    network_mode: host
+    devices:
+      - /dev/video0:/dev/video0
+    restart: unless-stopped
