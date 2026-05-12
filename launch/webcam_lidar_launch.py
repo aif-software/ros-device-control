@@ -20,6 +20,8 @@ def generate_launch_description():
                 parameters=[
                     {
                         "video_device": "/dev/video0",
+                        "pixel_format": "YUYV",
+                        "output_encoding": "yuv422_yuy2",
                     }
                 ],
             ),
