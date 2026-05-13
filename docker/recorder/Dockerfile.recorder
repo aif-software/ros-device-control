@@ -17,13 +17,11 @@ RUN apt-get update && apt-get install -y \
 ENV ROS_DOMAIN_ID=69
 
 COPY launch/recorder_launch.py launch.py
-COPY launch/recorder_params.yaml recorder_params.yaml
-COPY launch/override.yaml override.yaml
+COPY config/recorder_params.yaml recorder_params.yaml
+COPY config/override.yaml override.yaml
 
-COPY docker/ros_entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
 
 STOPSIGNAL SIGINT
 
-ENTRYPOINT ["./entrypoint.sh"]
 CMD ["ros2", "launch", "launch.py", "sigterm_timeout:=1e9"]
