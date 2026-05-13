@@ -18,9 +18,6 @@ ENV ROS_DOMAIN_ID=69
 
 COPY launch/recorder_launch.py launch.py
 COPY config/recorder_params.yaml recorder_params.yaml
-COPY config/override.yaml override.yaml
-
-RUN chmod +x entrypoint.sh
 
 STOPSIGNAL SIGINT
 
