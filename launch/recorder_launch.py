@@ -8,7 +8,7 @@ def generate_launch_description():
 
     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    params_file = os.getenv("RECORDER_QOS_FILE", default="recorder_params.yaml")
+    params_file = os.getenv("RECORDER_PARAMS_FILE", default="recorder_params.yaml")
 
     return LaunchDescription(
         [
