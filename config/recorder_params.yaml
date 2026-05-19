@@ -1,0 +1,19 @@
+recorder:
+  ros__parameters:
+    record:
+      topics: 
+        - /lidar_points
+        - /flir_0/image_raw
+        - /flir_1/image_raw
+        - /aux/image_color
+        - /left/cost
+        - /left/depth
+        - /left/image_rect
+        - /right/image_rect
+        - /imu/imu_data
+      compression_mode: file
+      compression_format: zstd
+    storage:
+      storage_id: mcap
+      max_bagfile_size: 3000000000 
+      max_cache_size: 20000000000

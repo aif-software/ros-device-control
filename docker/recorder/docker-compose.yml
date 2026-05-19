@@ -2,7 +2,7 @@ services:
   ros-recording:
     build:
       context: ../..
-      dockerfile: docker/orin/Dockerfile.recorder
+      dockerfile: docker/recorder/Dockerfile.recorder
     container_name: ros-recorder
     network_mode: host
     ipc: host

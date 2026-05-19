@@ -12,11 +12,11 @@ def generate_launch_description():
         [
             # Flir 1
             Node(
-                name="flir_driver",
+                name="flir_driver_0",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
-                namespace="flir_left",
-                remappings=[('/image_raw', '/flir_left/image_raw')],
+                namespace="flir_0",
+                remappings=[("/image_raw", "/flir_0/image_raw")],
                 parameters=[
                     {
                         "output_encoding": "mono16",
@@ -27,11 +27,11 @@ def generate_launch_description():
             ),
             # Flir 2
             Node(
-                name="flir_driver2",
+                name="flir_driver_1",
                 package="v4l2_camera",
                 executable="v4l2_camera_node",
-                namespace="flir_right",
-                remappings=[('/image_raw', '/flir_right/image_raw')],
+                namespace="flir_1",
+                remappings=[("/image_raw", "/flir_1/image_raw")],
                 parameters=[
                     {
                         "output_encoding": "mono16",
@@ -42,4 +42,3 @@ def generate_launch_description():
             ),
         ]
     )
-

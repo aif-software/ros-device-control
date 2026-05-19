@@ -75,7 +75,7 @@ docker compose -f docker/pi/docker-compose.yml up
 Inside Orin in the ros-device-control folder run:
 
 ```bash
-docker compose -f docker/orin/recording.yml up
+docker compose -f docker/recorder/docker-compose.yml up
 ```
 
 This will start the recording and can be stopped using CTRL-C. The container can also be run on background appending the command with "-d" option.
