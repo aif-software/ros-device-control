@@ -94,3 +94,7 @@ printToTerminal()
  SubscriberNode "*" --> "1" DataSenderNode
  SubscriberNode "*" --> "1" Logger
 ```
+
+## Other related repositories
+- [UI](https://github.com/M3S-Kuura/Ros2-recording-UI)
+- [Bag processor](https://github.com/M3S-Kuura/Ros2-bag-processsor)
