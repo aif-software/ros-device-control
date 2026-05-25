@@ -1,0 +1,19 @@
+# this file has multisense drivers, and other necessary packages
+# for recording (rosbag) and inspecting (foxglove)
+FROM ros:jazzy-ros-core
+
+# setup working directory
+WORKDIR /app
+
+# install dependencies from apt
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    ros-jazzy-foxglove-bridge
+
+
+# set ros domain
+ENV ROS_DOMAIN_ID=69
+
+# launch ros package
+CMD ["ros2", "launch", "foxglove_bridge", "foxglove_bridge_launch.xml"]

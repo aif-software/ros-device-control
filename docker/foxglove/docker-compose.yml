@@ -1,0 +1,10 @@
+services:
+  ros-foxglove-bridge:
+    build:
+      context: ../..
+      dockerfile: docker/foxglove/Dockerfile.foxglove
+    container_name: ros-foxglove-bridge
+    network_mode: host
+    ipc: host
+    restart: unless-stopped
+    stop_grace_period: 24h
