@@ -1,0 +1,6 @@
+- Burak pois rootilta (?)
+- Tilan käyttö scripti (dh -f)
+- Scripti joka pakkaa ros datan ja siirtää sen samaan kansioon can datan kanssa
+- scripti jolla resetoidaan ptp4l.service nanolta ja pi:ltä
+- sudo zstd -T0 -2 --rm *.mcap
+- saman napin taakse can & ros2 record stop
