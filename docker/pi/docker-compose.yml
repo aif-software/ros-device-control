@@ -5,4 +5,5 @@ services:
       dockerfile: docker/pi/Dockerfile.lidar
     container_name: ros-lidar
     network_mode: host
+    ipc: host
     restart: unless-stopped

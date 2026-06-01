@@ -5,6 +5,7 @@ services:
       dockerfile: docker/nano/Dockerfile.flir
     container_name: ros-flir
     network_mode: host
+    ipc: host
     devices:
       - /dev/video0:/dev/video0
       - /dev/video2:/dev/video2
