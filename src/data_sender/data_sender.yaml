@@ -1,6 +1,0 @@
-/data_sender:
-  ros__parameters:
-    mqtt_host: localhost
-    start_type_description_service: true
-    use_sim_time: false
-
