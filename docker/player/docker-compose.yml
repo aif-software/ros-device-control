@@ -1,0 +1,14 @@
+services:
+  ros-player:
+    build:
+      context: ../..
+      dockerfile: docker/player/Dockerfile.player
+    container_name: ros-player
+    environment:
+      BAG: ${BAG:-}
+    network_mode: host
+    ipc: host
+    volumes:
+      - /mnt/Burak2/ros-device-control/bags:/bags
+    stdin_open: true
+    tty: true
