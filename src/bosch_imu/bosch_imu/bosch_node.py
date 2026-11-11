@@ -4,11 +4,12 @@ import serial
 
 import rclpy
 from rclpy.node import Node
+from rclpy.utilities import try_shutdown
 
 from sensor_msgs.msg import Imu, MagneticField
 
 
-class ImuNode(Node):
+class BoschNode(Node):
 
     def __init__(self):
         super().__init__("imu_node")
@@ -90,6 +91,7 @@ class ImuNode(Node):
                 break
 
     def destroy_node(self):
+        super().destroy_node()
 
         self.running = False
 
@@ -99,20 +101,20 @@ class ImuNode(Node):
         if self.ser_.is_open:
             self.ser_.close()
 
-        super().destroy_node()
-
 
 def main(args=None):
     rclpy.init(args=args)
-    node = ImuNode()
+    node = BoschNode()
 
     try:
         rclpy.spin(node)
+
     except KeyboardInterrupt:
         pass
+
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        try_shutdown()
 
 
 if __name__ == "__main__":
